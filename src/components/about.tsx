@@ -16,7 +16,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
+      staggerChildren: 0.1,
       delayChildren: 0.2,
     },
   },
@@ -28,7 +28,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.4,
     },
   },
 };
@@ -39,15 +39,15 @@ export function About() {
 
   if (loading) {
     return (
-        <section id="about" className="py-20 sm:py-24">
+        <section id="about" className="py-16 sm:py-20">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <Skeleton className="rounded-full w-full max-w-sm h-auto aspect-square mx-auto" />
-                    <div className="space-y-4">
-                        <Skeleton className="h-12 w-1/2" />
-                        <Skeleton className="h-6 w-full" />
-                        <Skeleton className="h-6 w-full" />
-                        <Skeleton className="h-6 w-3/4" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <Skeleton className="rounded-full w-full max-w-xs h-auto aspect-square mx-auto" />
+                    <div className="space-y-3">
+                        <Skeleton className="h-10 w-1/2" />
+                        <Skeleton className="h-5 w-full" />
+                        <Skeleton className="h-5 w-full" />
+                        <Skeleton className="h-5 w-3/4" />
                     </div>
                 </div>
             </div>
@@ -58,18 +58,18 @@ export function About() {
   return (
     <motion.section
       id="about"
-      className="py-20 sm:py-24"
+      className="py-16 sm:py-20"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       variants={containerVariants}
     >
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-12">
           <motion.div variants={itemVariants}>
-            <div className="relative aspect-square rounded-full overflow-hidden shadow-2xl w-full max-w-sm mx-auto">
+            <div className="relative aspect-square rounded-full overflow-hidden shadow-2xl w-full max-w-xs mx-auto">
               <Image 
-                src={profile?.profilePicture || "https://placehold.co/800x800.png"} 
+                src={profile?.profilePicture || "https://placehold.co/600x600.png"} 
                 alt="Profile picture"
                 fill
                 className="object-cover"
@@ -78,10 +78,10 @@ export function About() {
             </div>
           </motion.div>
           <motion.div variants={itemVariants} className="text-center lg:text-left">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-6">
+            <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tighter mb-4">
               {t('about.title')}
             </h2>
-            <p className="md:text-lg text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed">
               {profile?.aboutDescription || t('about.description')}
             </p>
           </motion.div>
@@ -89,13 +89,13 @@ export function About() {
 
         {profile?.cvUrl && (
           <motion.div variants={itemVariants} className="text-center">
-             <h3 className="font-headline text-2xl md:text-3xl font-bold tracking-tighter mb-6">
+             <h3 className="font-headline text-xl md:text-2xl font-bold tracking-tighter mb-4">
                 Mon CV
             </h3>
-            <div className="mb-6">
-                <iframe src={profile.cvUrl} className="w-full max-w-4xl mx-auto h-[500px] border rounded-lg shadow-lg" title="CV"></iframe>
+            <div className="mb-4">
+                <iframe src={profile.cvUrl} className="w-full max-w-3xl mx-auto h-[400px] border rounded-lg shadow-lg" title="CV"></iframe>
             </div>
-            <Button asChild>
+            <Button asChild size="sm">
                 <a href={profile.cvUrl} target="_blank" download>
                     <Download className="mr-2 h-4 w-4" />
                     Télécharger le CV

@@ -15,7 +15,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.3,
+      staggerChildren: 0.1,
       delayChildren: 0.2,
     },
   },
@@ -27,7 +27,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.6,
+      duration: 0.4,
       ease: "easeOut",
     },
   },
@@ -37,31 +37,32 @@ export function Hero() {
   const { t } = useLanguage();
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
   
-  const heroTitle = loading ? <Skeleton className="h-14 w-3/4" /> :
+  const heroTitle = loading ? <Skeleton className="h-12 w-3/4" /> :
     profile?.name ? `Hi, I'm ${profile.name}` : t('hero.title');
 
   return (
-    <section className="py-24 sm:py-32 bg-gradient-to-b from-background to-secondary/30">
+    <section className="py-16 sm:py-20 bg-gradient-to-b from-background to-secondary/30">
         <motion.div 
             className="container mx-auto px-4 text-center"
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
             variants={containerVariants}
         >
             <motion.h1 
-                className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mb-6"
+                className="font-headline text-3xl md:text-4xl font-extrabold tracking-tighter mb-4"
                 variants={itemVariants}
             >
                 {heroTitle}
             </motion.h1>
             <motion.p 
-                className="text-muted-foreground max-w-3xl mx-auto mb-8 md:text-lg"
+                className="text-muted-foreground max-w-2xl mx-auto mb-6"
                 variants={itemVariants}
             >
                 {t('hero.subtitle')}
             </motion.p>
             <motion.div variants={itemVariants}>
-                <Button size="lg" asChild>
+                <Button asChild>
                     <a href="mailto:contact@example.com">
                         {t('hero.contactButton')} <ArrowRight />
                     </a>

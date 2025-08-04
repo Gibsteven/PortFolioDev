@@ -23,9 +23,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const { t } = useLanguage();
   return (
     <Link href={`/projects/${project.id}`} className="group block">
-      <Card className="h-full flex flex-col transition-all duration-300 ease-in-out group-hover:shadow-xl group-hover:-translate-y-2">
-        <CardHeader>
-          <div className="aspect-[4/3] relative overflow-hidden rounded-t-lg">
+      <Card className="h-full flex flex-col transition-all duration-300 ease-in-out group-hover:shadow-xl group-hover:-translate-y-1">
+        <CardHeader className="p-4">
+          <div className="aspect-[4/3] relative overflow-hidden rounded-t-md">
             <Image
               src={project.image}
               alt={project.title}
@@ -35,14 +35,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
             />
           </div>
         </CardHeader>
-        <CardContent className="flex-grow">
-          <Badge variant="secondary" className="mb-2">{project.type}</Badge>
-          <CardTitle className="font-headline text-2xl mb-2">{project.title}</CardTitle>
-          <CardDescription>{project.shortDescription}</CardDescription>
+        <CardContent className="flex-grow p-4">
+          <Badge variant="secondary" className="mb-2 text-xs">{project.type}</Badge>
+          <CardTitle className="font-headline text-xl mb-1">{project.title}</CardTitle>
+          <CardDescription className="text-sm">{project.shortDescription}</CardDescription>
         </CardContent>
-        <CardFooter>
-           <div className="text-sm font-medium text-primary group-hover:text-accent flex items-center gap-2">
-            {t('projectCard.viewProject')} <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+        <CardFooter className="p-4">
+           <div className="text-xs font-medium text-primary group-hover:text-accent flex items-center gap-1">
+            {t('projectCard.viewProject')} <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
            </div>
         </CardFooter>
       </Card>
