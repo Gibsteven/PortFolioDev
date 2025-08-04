@@ -1,5 +1,15 @@
 {
   "home.title": "Codificar, Crear, Innovar",
   "home.subtitle": "Bienvenido a mi taller digital. Aquí encontrarás una selección curada de mi trabajo, desde aplicaciones web dinámicas hasta robustas soluciones full-stack.",
-  "projectCard.viewProject": "Ver Proyecto"
+  "projectCard.viewProject": "Ver Proyecto",
+  "hero.title": "Hola, soy un desarrollador",
+  "hero.subtitle": "Creo soluciones elegantes y eficientes con código, convirtiendo problemas complejos en experiencias de usuario intuitivas. Construyamos algo increíble juntos.",
+  "hero.contactButton": "Ponerse en contacto",
+  "about.title": "Sobre mí",
+  "about.description": "Soy un apasionado desarrollador full-stack con un amor por crear aplicaciones web hermosas, funcionales y centradas en el usuario. Con una base sólida en tecnologías tanto de front-end como de back-end, disfruto dando vida a las ideas, desde el concepto hasta la implementación. Soy un aprendiz de por vida, siempre emocionado por explorar nuevas tecnologías y mejorar mi oficio.",
+  "skills.title": "Mis habilidades",
+  "skills.description": "Un vistazo a las tecnologías y herramientas que utilizo para crear experiencias web modernas.",
+  "projects.title": "Mi trabajo",
+  "projects.description": "Una selección de proyectos que muestran mis habilidades y mi pasión por el desarrollo.",
+  "footer.rights": "Todos los derechos reservados."
 }

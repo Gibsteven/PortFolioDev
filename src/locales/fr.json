@@ -1,5 +1,15 @@
 {
   "home.title": "Coder, Créer, Innover",
   "home.subtitle": "Bienvenue dans mon atelier numérique. Vous y trouverez une sélection de mes travaux, des applications web dynamiques aux solutions full-stack robustes.",
-  "projectCard.viewProject": "Voir le projet"
+  "projectCard.viewProject": "Voir le projet",
+  "hero.title": "Bonjour, je suis un développeur",
+  "hero.subtitle": "Je conçois des solutions élégantes et efficaces avec du code, transformant des problèmes complexes en expériences utilisateur intuitives. Construisons ensemble quelque chose d'incroyable.",
+  "hero.contactButton": "Me contacter",
+  "about.title": "À propos de moi",
+  "about.description": "Je suis un développeur full-stack passionné qui adore créer des applications web belles, fonctionnelles et centrées sur l'utilisateur. Avec une base solide dans les technologies front-end et back-end, j'aime donner vie aux idées, du concept au déploiement. J'apprends tout au long de ma vie, toujours ravi d'explorer de nouvelles technologies et d'améliorer mon savoir-faire.",
+  "skills.title": "Mes compétences",
+  "skills.description": "Un aperçu des technologies et des outils que j'utilise pour créer des expériences web modernes.",
+  "projects.title": "Mon travail",
+  "projects.description": "Une sélection de projets qui mettent en valeur mes compétences et ma passion pour le développement.",
+  "footer.rights": "Tous droits réservés."
 }
