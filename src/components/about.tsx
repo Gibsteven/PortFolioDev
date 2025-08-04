@@ -39,7 +39,7 @@ export function About() {
 
   if (loading) {
     return (
-        <section id="about" className="py-24 sm:py-32">
+        <section id="about" className="py-20 sm:py-24">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <Skeleton className="rounded-full w-full max-w-sm h-auto aspect-square mx-auto" />
@@ -58,7 +58,7 @@ export function About() {
   return (
     <motion.section
       id="about"
-      className="py-24 sm:py-32"
+      className="py-20 sm:py-24"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
@@ -78,10 +78,10 @@ export function About() {
             </div>
           </motion.div>
           <motion.div variants={itemVariants} className="text-center lg:text-left">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-6">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-6">
               {t('about.title')}
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+            <p className="md:text-lg text-muted-foreground leading-relaxed">
               {profile?.aboutDescription || t('about.description')}
             </p>
           </motion.div>
@@ -89,11 +89,11 @@ export function About() {
 
         {profile?.cvUrl && (
           <motion.div variants={itemVariants} className="text-center">
-             <h3 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-6">
+             <h3 className="font-headline text-2xl md:text-3xl font-bold tracking-tighter mb-6">
                 Mon CV
             </h3>
             <div className="mb-6">
-                <iframe src={profile.cvUrl} className="w-full max-w-4xl mx-auto h-[600px] border rounded-lg shadow-lg" title="CV"></iframe>
+                <iframe src={profile.cvUrl} className="w-full max-w-4xl mx-auto h-[500px] border rounded-lg shadow-lg" title="CV"></iframe>
             </div>
             <Button asChild>
                 <a href={profile.cvUrl} target="_blank" download>

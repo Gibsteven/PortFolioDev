@@ -50,7 +50,7 @@ export function Projects() {
   return (
     <section 
         id="projects" 
-        className="py-24 sm:py-32 bg-secondary/50"
+        className="py-20 sm:py-24 bg-secondary/50"
     >
         <div className="container mx-auto px-4">
             <motion.div 
@@ -60,10 +60,10 @@ export function Projects() {
                 viewport={{ once: true, amount: 0.3 }}
                 variants={itemVariants}
             >
-                <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-4">
                     {t('projects.title')}
                 </h2>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                <p className="md:text-lg text-muted-foreground max-w-3xl mx-auto">
                     {t('projects.description')}
                 </p>
             </motion.div>
@@ -79,7 +79,7 @@ export function Projects() {
             {!loading && webProjects.length > 0 && (
                 <div className="mb-16">
                     <motion.h3 
-                        className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-8"
+                        className="font-headline text-2xl md:text-3xl font-bold tracking-tighter mb-8"
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, amount: 0.3 }}
@@ -106,7 +106,7 @@ export function Projects() {
             {!loading && mobileProjects.length > 0 && (
                  <div>
                     <motion.h3 
-                        className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-8"
+                        className="font-headline text-2xl md:text-3xl font-bold tracking-tighter mb-8"
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, amount: 0.3 }}

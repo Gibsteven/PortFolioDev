@@ -35,13 +35,13 @@ export function Skills() {
     const { t } = useLanguage();
 
     return (
-        <section id="skills" className="py-24 sm:py-32">
+        <section id="skills" className="py-20 sm:py-24">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+                    <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-4">
                         {t('skills.title')}
                     </h2>
-                    <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                    <p className="md:text-lg text-muted-foreground max-w-3xl mx-auto">
                         {t('skills.description')}
                     </p>
                 </div>

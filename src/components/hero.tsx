@@ -41,7 +41,7 @@ export function Hero() {
     profile?.name ? `Hi, I'm ${profile.name}` : t('hero.title');
 
   return (
-    <section className="py-32 sm:py-48 bg-gradient-to-b from-background to-secondary/30">
+    <section className="py-24 sm:py-32 bg-gradient-to-b from-background to-secondary/30">
         <motion.div 
             className="container mx-auto px-4 text-center"
             initial="hidden"
@@ -49,13 +49,13 @@ export function Hero() {
             variants={containerVariants}
         >
             <motion.h1 
-                className="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter mb-6"
+                className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mb-6"
                 variants={itemVariants}
             >
                 {heroTitle}
             </motion.h1>
             <motion.p 
-                className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8"
+                className="text-muted-foreground max-w-3xl mx-auto mb-8 md:text-lg"
                 variants={itemVariants}
             >
                 {t('hero.subtitle')}
