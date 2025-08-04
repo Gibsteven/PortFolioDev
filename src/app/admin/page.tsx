@@ -3,17 +3,18 @@
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, database, storage } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { ref as dbRef, set, push, remove } from 'firebase/database';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useList } from 'react-firebase-hooks/database';
 import { useToast } from '@/hooks/use-toast';
 import type { Project } from '@/types';
+import { addProject, deleteProject } from '@/lib/project-utils';
+import { ref as dbRef } from 'firebase/database';
 
 import {
   Form,
@@ -92,10 +93,7 @@ function AdminPage() {
 
         const tagsArray = values.tags.split(',').map(tag => tag.trim());
         
-        const projectsRef = dbRef(database, 'projects');
-        const newProjectRef = push(projectsRef);
-
-        await set(newProjectRef, {
+        await addProject({
             ...values,
             image: imageUrl,
             imagePath: uploadResult.ref.fullPath,
@@ -117,16 +115,10 @@ function AdminPage() {
     }
   }
 
-  async function deleteProject(project: Project) {
+  async function handleDelete(project: Project) {
     if (window.confirm("Are you sure you want to delete this project?")) {
         try {
-            await remove(dbRef(database, `projects/${project.id}`));
-            
-            if (project.imagePath) {
-                const imageRef = storageRef(storage, project.imagePath);
-                await deleteObject(imageRef);
-            }
-
+            await deleteProject(project);
             toast({
                 title: "Project Deleted",
                 description: "The project has been deleted successfully.",
@@ -186,7 +178,7 @@ function AdminPage() {
                                             <TableCell className="font-medium">{project.title}</TableCell>
                                             <TableCell>{project.type}</TableCell>
                                             <TableCell>
-                                                <Button variant="destructive" size="icon" onClick={() => deleteProject(project)}>
+                                                <Button variant="destructive" size="icon" onClick={() => handleDelete(project)}>
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </TableCell>
