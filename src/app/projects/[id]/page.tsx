@@ -14,7 +14,6 @@ type ProjectPageProps = {
   };
 };
 
-// Make the component async to fetch data
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const project = await getProjectById(params.id);
 
@@ -63,8 +62,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         </div>
         <aside className="lg:w-1/3">
-          <div className="sticky top-24">
-            <div className="aspect-video relative overflow-hidden rounded-lg shadow-lg mb-8">
+          <div className="sticky top-24 space-y-8">
+            <div className="aspect-video relative overflow-hidden rounded-lg shadow-lg">
               <Image
                 src={project.image}
                 alt={project.title}
@@ -73,6 +72,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 data-ai-hint={project['data-ai-hint']}
               />
             </div>
+
+            {project.video && (
+                <div className="aspect-video relative overflow-hidden rounded-lg shadow-lg">
+                    <video
+                        src={project.video}
+                        controls
+                        className="w-full h-full object-cover"
+                    >
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            )}
+
             <DescriptionEnhancer initialDescription={project.longDescription} />
           </div>
         </aside>

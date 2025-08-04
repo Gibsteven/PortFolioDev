@@ -6,7 +6,8 @@ export type Project = {
   longDescription: string;
   image: string;
   imagePath?: string; // Path in Firebase Storage
-  video?: string | null;
+  video?: string;
+  videoPath?: string; // Path in Firebase Storage
   tags: string[];
   url?: string;
   'data-ai-hint': string;
@@ -17,4 +18,6 @@ export type Profile = {
   aboutDescription: string;
   profilePicture: string;
   profilePicturePath?: string;
+  cvUrl?: string;
+  cvPath?: string;
 };

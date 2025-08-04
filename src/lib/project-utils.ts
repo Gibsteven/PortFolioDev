@@ -37,7 +37,7 @@ export async function getProjectById(id: string): Promise<Project | undefined> {
     }
 }
 
-export async function addProject(projectData: Omit<Project, 'id' | 'imagePath'> & { image: string, imagePath: string }) {
+export async function addProject(projectData: Omit<Project, 'id' | 'imagePath' | 'videoPath'> & { image: string, imagePath: string, video?: string, videoPath?: string }) {
     const newProjectRef = push(dbRef);
     await set(newProjectRef, projectData);
     return newProjectRef.key;
@@ -45,10 +45,19 @@ export async function addProject(projectData: Omit<Project, 'id' | 'imagePath'> 
 
 export async function deleteProject(project: Project) {
     if (project.id) {
+        // Delete from Realtime Database
         await remove(child(dbRef, project.id));
+        
+        // Delete image from Storage
         if (project.imagePath) {
             const imageRef = storageRef(storage, project.imagePath);
-            await deleteObject(imageRef);
+            await deleteObject(imageRef).catch(err => console.error("Error deleting image:", err));
+        }
+
+        // Delete video from Storage
+        if (project.videoPath) {
+            const videoRef = storageRef(storage, project.videoPath);
+            await deleteObject(videoRef).catch(err => console.error("Error deleting video:", err));
         }
     }
 }

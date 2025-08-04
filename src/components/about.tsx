@@ -8,6 +8,8 @@ import { ref } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import type { Profile } from '@/types';
 import { Skeleton } from './ui/skeleton';
+import { Button } from './ui/button';
+import { Download } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -63,7 +65,7 @@ export function About() {
       variants={containerVariants}
     >
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           <motion.div variants={itemVariants}>
             <div className="relative aspect-square rounded-full overflow-hidden shadow-2xl w-full max-w-sm mx-auto">
               <Image 
@@ -84,6 +86,23 @@ export function About() {
             </p>
           </motion.div>
         </div>
+
+        {profile?.cvUrl && (
+          <motion.div variants={itemVariants} className="text-center">
+             <h3 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-6">
+                Mon CV
+            </h3>
+            <div className="mb-6">
+                <iframe src={profile.cvUrl} className="w-full max-w-4xl mx-auto h-[600px] border rounded-lg shadow-lg" title="CV"></iframe>
+            </div>
+            <Button asChild>
+                <a href={profile.cvUrl} target="_blank" download>
+                    <Download className="mr-2 h-4 w-4" />
+                    Télécharger le CV
+                </a>
+            </Button>
+          </motion.div>
+        )}
       </div>
     </motion.section>
   );

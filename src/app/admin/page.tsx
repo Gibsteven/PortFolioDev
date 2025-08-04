@@ -14,7 +14,7 @@ import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import { useToast } from '@/hooks/use-toast';
 import type { Project, Profile } from '@/types';
 import { addProject, deleteProject } from '@/lib/project-utils';
-import { updateProfile, getProfile } from '@/lib/profile-utils';
+import { updateProfile } from '@/lib/profile-utils';
 import { ref as dbRef } from 'firebase/database';
 
 import {
@@ -52,6 +52,7 @@ const projectSchema = z.object({
     shortDescription: z.string().min(10, 'Short description must be at least 10 characters.'),
     longDescription: z.string().min(20, 'Long description must be at least 20 characters.'),
     image: z.any().refine((files) => files?.length == 1, "Image is required.").refine((files) => files?.[0]?.size <= 5000000, `Max file size is 5MB.`),
+    video: z.any().refine((files) => files?.[0]?.size <= 50000000, `Max file size is 50MB.`).optional(),
     'data-ai-hint': z.string().min(2, 'AI hint must be at least 2 characters.'),
     tags: z.string().min(2, 'Please add at least one tag.'),
     url: z.string().url('Please enter a valid project URL.').optional().or(z.literal('')),
@@ -61,6 +62,7 @@ const profileSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters.'),
     aboutDescription: z.string().min(20, 'About description must be at least 20 characters.'),
     profilePicture: z.any().refine((files) => files?.[0]?.size <= 5000000, `Max file size is 5MB.`).optional(),
+    cv: z.any().refine((files) => files?.[0]?.size <= 10000000, `Max file size is 10MB.`).optional(),
 });
 
 
@@ -80,6 +82,7 @@ function AdminPage() {
       shortDescription: '',
       longDescription: '',
       image: undefined,
+      video: undefined,
       'data-ai-hint': '',
       tags: '',
       url: '',
@@ -92,6 +95,7 @@ function AdminPage() {
       name: '',
       aboutDescription: '',
       profilePicture: undefined,
+      cv: undefined,
     },
   });
 
@@ -113,17 +117,33 @@ function AdminPage() {
 
   async function onProjectSubmit(values: z.infer<typeof projectSchema>) {
     try {
+        // Handle Image Upload
         const imageFile = values.image[0] as File;
         const imageStorageRef = storageRef(storage, `projects/${Date.now()}-${imageFile.name}`);
-        const uploadResult = await uploadBytes(imageStorageRef, imageFile);
-        const imageUrl = await getDownloadURL(uploadResult.ref);
+        const imageUploadResult = await uploadBytes(imageStorageRef, imageFile);
+        const imageUrl = await getDownloadURL(imageUploadResult.ref);
+        const imagePath = imageUploadResult.ref.fullPath;
+
+        let videoUrl: string | undefined = undefined;
+        let videoPath: string | undefined = undefined;
+
+        // Handle Video Upload
+        if (values.video && values.video.length > 0) {
+            const videoFile = values.video[0] as File;
+            const videoStorageRef = storageRef(storage, `projects/${Date.now()}-${videoFile.name}`);
+            const videoUploadResult = await uploadBytes(videoStorageRef, videoFile);
+            videoUrl = await getDownloadURL(videoUploadResult.ref);
+            videoPath = videoUploadResult.ref.fullPath;
+        }
 
         const tagsArray = values.tags.split(',').map(tag => tag.trim());
         
         await addProject({
             ...values,
             image: imageUrl,
-            imagePath: uploadResult.ref.fullPath,
+            imagePath: imagePath,
+            video: videoUrl,
+            videoPath: videoPath,
             tags: tagsArray,
         });
 
@@ -146,6 +166,8 @@ function AdminPage() {
     try {
         let imageUrl = profile?.profilePicture;
         let imagePath = profile?.profilePicturePath;
+        let cvUrl = profile?.cvUrl;
+        let cvPath = profile?.cvPath;
 
         if (values.profilePicture && values.profilePicture.length > 0) {
             const imageFile = values.profilePicture[0] as File;
@@ -155,10 +177,20 @@ function AdminPage() {
             imagePath = uploadResult.ref.fullPath;
         }
 
+        if (values.cv && values.cv.length > 0) {
+            const cvFile = values.cv[0] as File;
+            const cvStorageRef = storageRef(storage, `profile/${Date.now()}-${cvFile.name}`);
+            const uploadResult = await uploadBytes(cvStorageRef, cvFile);
+            cvUrl = await getDownloadURL(uploadResult.ref);
+            cvPath = uploadResult.ref.fullPath;
+        }
+
         await updateProfile({
             ...values,
             profilePicture: imageUrl,
             profilePicturePath: imagePath,
+            cvUrl: cvUrl,
+            cvPath: cvPath,
         });
 
         toast({
@@ -167,6 +199,7 @@ function AdminPage() {
         });
         profileForm.reset(values);
         profileForm.setValue('profilePicture', undefined)
+        profileForm.setValue('cv', undefined)
     } catch (error) {
         console.error("Error updating profile: ", error);
         toast({
@@ -309,6 +342,27 @@ function AdminPage() {
                                     </FormItem>
                                 )}
                              />
+                             <FormField
+                                control={profileForm.control}
+                                name="cv"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>CV (PDF)</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                        type="file"
+                                        accept="application/pdf"
+                                        onChange={(e) => field.onChange(e.target.files)}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Upload a new CV (max 10MB). Leave blank to keep the current one.
+                                        {profile?.cvUrl && <a href={profile.cvUrl} target="_blank" className="text-sm text-blue-500 hover:underline mt-2 block">View Current CV</a>}
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                             />
                             <Button type="submit" className="w-full" disabled={profileForm.formState.isSubmitting}>
                                 {profileForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 Update Profile
@@ -404,6 +458,26 @@ function AdminPage() {
                                     </FormControl>
                                     <FormDescription>
                                         Select an image from your device (max 5MB).
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                             />
+                             <FormField
+                                control={projectForm.control}
+                                name="video"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Project Video (Optional)</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                        type="file"
+                                        accept="video/*"
+                                        onChange={(e) => field.onChange(e.target.files)}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Select a video from your device (max 50MB).
                                     </FormDescription>
                                     <FormMessage />
                                     </FormItem>

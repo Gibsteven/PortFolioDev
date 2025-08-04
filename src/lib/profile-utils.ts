@@ -18,6 +18,6 @@ export async function getProfile(): Promise<Profile | null> {
     }
 }
 
-export async function updateProfile(profileData: Omit<Profile, 'id'>) {
+export async function updateProfile(profileData: Partial<Profile>) {
     await set(dbRef, profileData);
 }
