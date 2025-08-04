@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useRef, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Wand2, BrainCircuit, Lightbulb } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -30,7 +30,7 @@ function SubmitButton() {
 export function DescriptionEnhancer({ initialDescription }: { initialDescription: string }) {
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction] = useFormState(enhanceDescriptionAction, initialState);
+  const [state, formAction] = useActionState(enhanceDescriptionAction, initialState);
 
   useEffect(() => {
     if (state.status === 'success') {
