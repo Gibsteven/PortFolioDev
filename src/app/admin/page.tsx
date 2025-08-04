@@ -10,10 +10,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { useList } from 'react-firebase-hooks/database';
+import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import { useToast } from '@/hooks/use-toast';
-import type { Project } from '@/types';
+import type { Project, Profile } from '@/types';
 import { addProject, deleteProject } from '@/lib/project-utils';
+import { updateProfile, getProfile } from '@/lib/profile-utils';
 import { ref as dbRef } from 'firebase/database';
 
 import {
@@ -56,6 +57,12 @@ const projectSchema = z.object({
     url: z.string().url('Please enter a valid project URL.').optional().or(z.literal('')),
 });
 
+const profileSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters.'),
+    aboutDescription: z.string().min(20, 'About description must be at least 20 characters.'),
+    profilePicture: z.any().refine((files) => files?.[0]?.size <= 5000000, `Max file size is 5MB.`).optional(),
+});
+
 
 function AdminPage() {
   const [user, loading] = useAuthState(auth);
@@ -63,8 +70,9 @@ function AdminPage() {
   const { toast } = useToast();
   
   const [snapshots, projectsLoading] = useList(dbRef(database, 'projects'));
+  const [profile, profileLoading] = useObjectVal<Profile>(dbRef(database, 'profile'));
 
-  const form = useForm<z.infer<typeof projectSchema>>({
+  const projectForm = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
       title: '',
@@ -78,13 +86,32 @@ function AdminPage() {
     },
   });
 
+  const profileForm = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: '',
+      aboutDescription: '',
+      profilePicture: undefined,
+    },
+  });
+
+  useEffect(() => {
+    if (profile) {
+      profileForm.reset({
+        name: profile.name,
+        aboutDescription: profile.aboutDescription,
+      });
+    }
+  }, [profile, profileForm]);
+
+
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
 
-  async function onSubmit(values: z.infer<typeof projectSchema>) {
+  async function onProjectSubmit(values: z.infer<typeof projectSchema>) {
     try {
         const imageFile = values.image[0] as File;
         const imageStorageRef = storageRef(storage, `projects/${Date.now()}-${imageFile.name}`);
@@ -104,7 +131,7 @@ function AdminPage() {
             title: "Project Added",
             description: "Your new project has been saved successfully.",
         });
-        form.reset();
+        projectForm.reset();
     } catch (error) {
         console.error("Error adding document: ", error);
         toast({
@@ -114,6 +141,42 @@ function AdminPage() {
         });
     }
   }
+
+  async function onProfileSubmit(values: z.infer<typeof profileSchema>) {
+    try {
+        let imageUrl = profile?.profilePicture;
+        let imagePath = profile?.profilePicturePath;
+
+        if (values.profilePicture && values.profilePicture.length > 0) {
+            const imageFile = values.profilePicture[0] as File;
+            const imageStorageRef = storageRef(storage, `profile/${Date.now()}-${imageFile.name}`);
+            const uploadResult = await uploadBytes(imageStorageRef, imageFile);
+            imageUrl = await getDownloadURL(uploadResult.ref);
+            imagePath = uploadResult.ref.fullPath;
+        }
+
+        await updateProfile({
+            ...values,
+            profilePicture: imageUrl,
+            profilePicturePath: imagePath,
+        });
+
+        toast({
+            title: "Profile Updated",
+            description: "Your profile has been updated successfully.",
+        });
+        profileForm.reset(values);
+        profileForm.setValue('profilePicture', undefined)
+    } catch (error) {
+        console.error("Error updating profile: ", error);
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "There was a problem updating your profile.",
+        });
+    }
+}
+
 
   async function handleDelete(project: Project) {
     if (window.confirm("Are you sure you want to delete this project?")) {
@@ -155,7 +218,7 @@ function AdminPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-12">
                 <Card>
                     <CardHeader>
                         <CardTitle>Your Projects</CardTitle>
@@ -189,6 +252,72 @@ function AdminPage() {
                         </Table>
                     </CardContent>
                 </Card>
+
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Manage Profile</CardTitle>
+                        <CardDescription>Update your public profile information.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {profileLoading ? <Loader2 className="h-6 w-6 animate-spin mx-auto" /> :
+                        <Form {...profileForm}>
+                          <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-6">
+                            <FormField
+                              control={profileForm.control}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Your Name</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="e.g., Jane Doe" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={profileForm.control}
+                              name="aboutDescription"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>About Description</FormLabel>
+                                  <FormControl>
+                                    <Textarea rows={5} placeholder="Tell us about yourself." {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                                control={profileForm.control}
+                                name="profilePicture"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Profile Picture</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => field.onChange(e.target.files)}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Upload a new profile picture (max 5MB). Leave blank to keep the current one.
+                                        {profile?.profilePicture && <img src={profile.profilePicture} alt="Current profile" className="w-20 h-20 rounded-full mt-2" />}
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                             />
+                            <Button type="submit" className="w-full" disabled={profileForm.formState.isSubmitting}>
+                                {profileForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Update Profile
+                            </Button>
+                          </form>
+                        </Form>
+                        }
+                    </CardContent>
+                </Card>
             </div>
             <div>
                 <Card>
@@ -197,10 +326,10 @@ function AdminPage() {
                         <CardDescription>Fill out the form to add a new project to your portfolio.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Form {...form}>
-                          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <Form {...projectForm}>
+                          <form onSubmit={projectForm.handleSubmit(onProjectSubmit)} className="space-y-6">
                             <FormField
-                              control={form.control}
+                              control={projectForm.control}
                               name="title"
                               render={({ field }) => (
                                 <FormItem>
@@ -213,7 +342,7 @@ function AdminPage() {
                               )}
                             />
                             <FormField
-                                control={form.control}
+                                control={projectForm.control}
                                 name="type"
                                 render={({ field }) => (
                                     <FormItem>
@@ -235,7 +364,7 @@ function AdminPage() {
                                 )}
                             />
                             <FormField
-                              control={form.control}
+                              control={projectForm.control}
                               name="shortDescription"
                               render={({ field }) => (
                                 <FormItem>
@@ -248,7 +377,7 @@ function AdminPage() {
                               )}
                             />
                             <FormField
-                              control={form.control}
+                              control={projectForm.control}
                               name="longDescription"
                               render={({ field }) => (
                                 <FormItem>
@@ -261,7 +390,7 @@ function AdminPage() {
                               )}
                             />
                             <FormField
-                                control={form.control}
+                                control={projectForm.control}
                                 name="image"
                                 render={({ field }) => (
                                     <FormItem>
@@ -281,7 +410,7 @@ function AdminPage() {
                                 )}
                              />
                              <FormField
-                              control={form.control}
+                              control={projectForm.control}
                               name="data-ai-hint"
                               render={({ field }) => (
                                 <FormItem>
@@ -297,7 +426,7 @@ function AdminPage() {
                               )}
                             />
                             <FormField
-                              control={form.control}
+                              control={projectForm.control}
                               name="tags"
                               render={({ field }) => (
                                 <FormItem>
@@ -313,7 +442,7 @@ function AdminPage() {
                               )}
                             />
                              <FormField
-                              control={form.control}
+                              control={projectForm.control}
                               name="url"
                               render={({ field }) => (
                                 <FormItem>
@@ -325,8 +454,8 @@ function AdminPage() {
                                 </FormItem>
                               )}
                             />
-                            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                                {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            <Button type="submit" className="w-full" disabled={projectForm.formState.isSubmitting}>
+                                {projectForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 Add Project
                             </Button>
                           </form>

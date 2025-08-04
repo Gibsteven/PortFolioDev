@@ -11,3 +11,10 @@ export type Project = {
   url?: string;
   'data-ai-hint': string;
 };
+
+export type Profile = {
+  name: string;
+  aboutDescription: string;
+  profilePicture: string;
+  profilePicturePath?: string;
+};

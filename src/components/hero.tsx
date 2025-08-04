@@ -1,10 +1,14 @@
-// This is a new file
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useObjectVal } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
+import { database } from '@/lib/firebase';
+import type { Profile } from '@/types';
+import { Skeleton } from './ui/skeleton';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -31,6 +35,11 @@ const itemVariants = {
 
 export function Hero() {
   const { t } = useLanguage();
+  const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
+  
+  const heroTitle = loading ? <Skeleton className="h-14 w-3/4 mx-auto" /> :
+    profile?.name ? `Hi, I'm ${profile.name}` : t('hero.title');
+
   return (
     <section className="py-32 sm:py-48 bg-gradient-to-b from-background to-secondary/30">
         <motion.div 
@@ -43,7 +52,7 @@ export function Hero() {
                 className="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter mb-6"
                 variants={itemVariants}
             >
-                {t('hero.title')}
+                {heroTitle}
             </motion.h1>
             <motion.p 
                 className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8"

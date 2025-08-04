@@ -1,9 +1,13 @@
-// This is a new file
 'use client';
 
 import { useLanguage } from '@/hooks/use-language';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useObjectVal } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
+import { database } from '@/lib/firebase';
+import type { Profile } from '@/types';
+import { Skeleton } from './ui/skeleton';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,6 +33,25 @@ const itemVariants = {
 
 export function About() {
   const { t } = useLanguage();
+  const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
+
+  if (loading) {
+    return (
+        <section id="about" className="py-24 sm:py-32">
+            <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <Skeleton className="rounded-full w-full max-w-sm h-auto aspect-square mx-auto" />
+                    <div className="space-y-4">
+                        <Skeleton className="h-12 w-1/2" />
+                        <Skeleton className="h-6 w-full" />
+                        <Skeleton className="h-6 w-full" />
+                        <Skeleton className="h-6 w-3/4" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+  }
 
   return (
     <motion.section
@@ -44,7 +67,7 @@ export function About() {
           <motion.div variants={itemVariants}>
             <div className="relative aspect-square rounded-full overflow-hidden shadow-2xl w-full max-w-sm mx-auto">
               <Image 
-                src="https://placehold.co/800x800.png" 
+                src={profile?.profilePicture || "https://placehold.co/800x800.png"} 
                 alt="Profile picture"
                 fill
                 className="object-cover"
@@ -57,7 +80,7 @@ export function About() {
               {t('about.title')}
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              {t('about.description')}
+              {profile?.aboutDescription || t('about.description')}
             </p>
           </motion.div>
         </div>
