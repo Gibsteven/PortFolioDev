@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/header';
 import { LanguageProvider } from '@/hooks/use-language';
 import { Footer } from '@/components/footer';
+import { PageLoader } from '@/components/page-loader';
 
 export const metadata: Metadata = {
   title: 'Dev Showcase',
@@ -23,6 +24,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col bg-background text-foreground">
+        <PageLoader />
         <LanguageProvider>
           <Header />
           <main className="flex-grow">
