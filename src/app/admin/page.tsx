@@ -1,17 +1,17 @@
 'use client';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db, storage } from '@/lib/firebase';
+import { auth, database, storage } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { ref as dbRef, set, push, remove } from 'firebase/database';
+import { useList } from 'react-firebase-hooks/database';
 import { useToast } from '@/hooks/use-toast';
 import type { Project } from '@/types';
 
@@ -61,7 +61,7 @@ function AdminPage() {
   const router = useRouter();
   const { toast } = useToast();
   
-  const [projectsSnapshot, projectsLoading] = useCollection(collection(db, 'projects'));
+  const [snapshots, projectsLoading] = useList(dbRef(database, 'projects'));
 
   const form = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
@@ -86,13 +86,16 @@ function AdminPage() {
   async function onSubmit(values: z.infer<typeof projectSchema>) {
     try {
         const imageFile = values.image[0] as File;
-        const storageRef = ref(storage, `projects/${Date.now()}-${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
+        const imageStorageRef = storageRef(storage, `projects/${Date.now()}-${imageFile.name}`);
+        const uploadResult = await uploadBytes(imageStorageRef, imageFile);
         const imageUrl = await getDownloadURL(uploadResult.ref);
 
         const tagsArray = values.tags.split(',').map(tag => tag.trim());
+        
+        const projectsRef = dbRef(database, 'projects');
+        const newProjectRef = push(projectsRef);
 
-        await addDoc(collection(db, 'projects'), {
+        await set(newProjectRef, {
             ...values,
             image: imageUrl,
             imagePath: uploadResult.ref.fullPath,
@@ -117,10 +120,10 @@ function AdminPage() {
   async function deleteProject(project: Project) {
     if (window.confirm("Are you sure you want to delete this project?")) {
         try {
-            await deleteDoc(doc(db, "projects", project.id));
+            await remove(dbRef(database, `projects/${project.id}`));
             
             if (project.imagePath) {
-                const imageRef = ref(storage, project.imagePath);
+                const imageRef = storageRef(storage, project.imagePath);
                 await deleteObject(imageRef);
             }
 
@@ -146,6 +149,8 @@ function AdminPage() {
       </div>
     );
   }
+  
+  const projects = snapshots ? snapshots.map(snapshot => ({ id: snapshot.key, ...snapshot.val() } as Project)) : [];
 
   return (
     <div className="container mx-auto py-12">
@@ -175,8 +180,7 @@ function AdminPage() {
                             </TableHeader>
                             <TableBody>
                                 {projectsLoading && <TableRow><TableCell colSpan={3} className="text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></TableCell></TableRow>}
-                                {!projectsLoading && projectsSnapshot?.docs.map(projectDoc => {
-                                    const project = { id: projectDoc.id, ...projectDoc.data() } as Project;
+                                {!projectsLoading && projects.map(project => {
                                     return (
                                         <TableRow key={project.id}>
                                             <TableCell className="font-medium">{project.title}</TableCell>

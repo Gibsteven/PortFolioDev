@@ -4,9 +4,9 @@ import { useMemo } from 'react';
 import { ProjectCard } from '@/components/project-card';
 import { useLanguage } from '@/hooks/use-language';
 import { motion } from 'framer-motion';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useList } from 'react-firebase-hooks/database';
+import { ref } from 'firebase/database';
+import { database } from '@/lib/firebase';
 import type { Project } from '@/types';
 import { Skeleton } from './ui/skeleton';
 
@@ -33,12 +33,12 @@ const itemVariants = {
 
 export function Projects() {
   const { t } = useLanguage();
-  const [projectsSnapshot, loading] = useCollection(collection(db, 'projects'));
+  const [snapshots, loading] = useList(ref(database, 'projects'));
   
   const projects = useMemo(() => {
-      if (loading || !projectsSnapshot) return [];
-      return projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
-  }, [projectsSnapshot, loading]);
+      if (loading || !snapshots) return [];
+      return snapshots.map(snapshot => ({ id: snapshot.key, ...snapshot.val() } as Project));
+  }, [snapshots, loading]);
 
 
   const { webProjects, mobileProjects } = useMemo(() => {
