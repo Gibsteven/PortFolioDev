@@ -1,15 +1,16 @@
 'use client';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from '@/lib/firebase';
+import { auth, db, storage } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { useToast } from '@/hooks/use-toast';
 import type { Project } from '@/types';
@@ -48,7 +49,7 @@ const projectSchema = z.object({
     type: z.enum(['Web App', 'Mobile App', 'Full-Stack']),
     shortDescription: z.string().min(10, 'Short description must be at least 10 characters.'),
     longDescription: z.string().min(20, 'Long description must be at least 20 characters.'),
-    image: z.string().url('Please enter a valid image URL.'),
+    image: z.any().refine((files) => files?.length == 1, "Image is required.").refine((files) => files?.[0]?.size <= 5000000, `Max file size is 5MB.`),
     'data-ai-hint': z.string().min(2, 'AI hint must be at least 2 characters.'),
     tags: z.string().min(2, 'Please add at least one tag.'),
     url: z.string().url('Please enter a valid project URL.').optional().or(z.literal('')),
@@ -69,7 +70,7 @@ function AdminPage() {
       type: 'Web App',
       shortDescription: '',
       longDescription: '',
-      image: 'https://placehold.co/1200x800.png',
+      image: undefined,
       'data-ai-hint': '',
       tags: '',
       url: '',
@@ -84,11 +85,20 @@ function AdminPage() {
 
   async function onSubmit(values: z.infer<typeof projectSchema>) {
     try {
+        const imageFile = values.image[0] as File;
+        const storageRef = ref(storage, `projects/${Date.now()}-${imageFile.name}`);
+        const uploadResult = await uploadBytes(storageRef, imageFile);
+        const imageUrl = await getDownloadURL(uploadResult.ref);
+
         const tagsArray = values.tags.split(',').map(tag => tag.trim());
+
         await addDoc(collection(db, 'projects'), {
             ...values,
+            image: imageUrl,
+            imagePath: uploadResult.ref.fullPath,
             tags: tagsArray,
         });
+
         toast({
             title: "Project Added",
             description: "Your new project has been saved successfully.",
@@ -104,10 +114,16 @@ function AdminPage() {
     }
   }
 
-  async function deleteProject(id: string) {
+  async function deleteProject(project: Project) {
     if (window.confirm("Are you sure you want to delete this project?")) {
         try {
-            await deleteDoc(doc(db, "projects", id));
+            await deleteDoc(doc(db, "projects", project.id));
+            
+            if (project.imagePath) {
+                const imageRef = ref(storage, project.imagePath);
+                await deleteObject(imageRef);
+            }
+
             toast({
                 title: "Project Deleted",
                 description: "The project has been deleted successfully.",
@@ -166,7 +182,7 @@ function AdminPage() {
                                             <TableCell className="font-medium">{project.title}</TableCell>
                                             <TableCell>{project.type}</TableCell>
                                             <TableCell>
-                                                <Button variant="destructive" size="icon" onClick={() => deleteProject(project.id)}>
+                                                <Button variant="destructive" size="icon" onClick={() => deleteProject(project)}>
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </TableCell>
@@ -249,18 +265,25 @@ function AdminPage() {
                               )}
                             />
                             <FormField
-                              control={form.control}
-                              name="image"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Image URL</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="https://placehold.co/1200x800.png" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                                control={form.control}
+                                name="image"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Project Image</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => field.onChange(e.target.files)}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Select an image from your device (max 5MB).
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                             />
                              <FormField
                               control={form.control}
                               name="data-ai-hint"

@@ -5,6 +5,7 @@ export type Project = {
   shortDescription: string;
   longDescription: string;
   image: string;
+  imagePath?: string; // Path in Firebase Storage
   video?: string | null;
   tags: string[];
   url?: string;
