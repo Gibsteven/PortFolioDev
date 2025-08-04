@@ -37,7 +37,7 @@ export function Hero() {
   const { t } = useLanguage();
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
   
-  const heroTitle = loading ? <Skeleton className="h-14 w-3/4 mx-auto" /> :
+  const heroTitle = loading ? <Skeleton className="h-14 w-3/4" /> :
     profile?.name ? `Hi, I'm ${profile.name}` : t('hero.title');
 
   return (
