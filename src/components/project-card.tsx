@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Project } from '@/types';
@@ -11,12 +13,14 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
 
 interface ProjectCardProps {
   project: Project;
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const { t } = useLanguage();
   return (
     <Link href={`/projects/${project.id}`} className="group block">
       <Card className="h-full flex flex-col transition-all duration-300 ease-in-out group-hover:shadow-xl group-hover:-translate-y-2">
@@ -38,7 +42,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </CardContent>
         <CardFooter>
            <div className="text-sm font-medium text-primary group-hover:text-accent flex items-center gap-2">
-            View Project <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            {t('projectCard.viewProject')} <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
            </div>
         </CardFooter>
       </Card>

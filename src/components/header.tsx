@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
+import { LanguageSwitcher } from './language-switcher';
 
 export function Header() {
   return (
@@ -11,6 +12,7 @@ export function Header() {
             Dev Showcase
           </span>
         </Link>
+        <LanguageSwitcher />
       </div>
     </header>
   );
