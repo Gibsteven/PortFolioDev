@@ -24,11 +24,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  experimental: {
-    // This is to allow the Next.js dev server to be proxied in the preview environment.
-    // @ts-ignore
-    allowedDevOrigins: ["**/**"],
-  }
 };
 
 export default nextConfig;
