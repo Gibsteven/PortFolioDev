@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/icons';
 import { Github, Linkedin, Twitter } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
+import { Button } from './ui/button';
 
 export function Footer() {
     const { t } = useLanguage();
@@ -18,6 +19,9 @@ export function Footer() {
           </span>
         </div>
         <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" asChild>
+                <Link href="/admin">Admin</Link>
+            </Button>
             <Link href="#" aria-label="Github">
                 <Github className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
             </Link>
