@@ -1,3 +1,4 @@
+'use client';
 // This is a new file
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
