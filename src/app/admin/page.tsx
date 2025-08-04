@@ -214,7 +214,7 @@ function AdminPage() {
   async function handleDelete(project: Project) {
     if (window.confirm("Are you sure you want to delete this project?")) {
         try {
-            await deleteProject(project);
+            await deleteProject(project.id, project.imagePath, project.videoPath);
             toast({
                 title: "Project Deleted",
                 description: "The project has been deleted successfully.",

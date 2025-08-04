@@ -43,20 +43,20 @@ export async function addProject(projectData: Omit<Project, 'id' | 'imagePath' |
     return newProjectRef.key;
 }
 
-export async function deleteProject(project: Project) {
-    if (project.id) {
+export async function deleteProject(projectId: string, imagePath?: string, videoPath?: string) {
+    if (projectId) {
         // Delete from Realtime Database
-        await remove(child(dbRef, project.id));
+        await remove(child(dbRef, projectId));
         
         // Delete image from Storage
-        if (project.imagePath) {
-            const imageRef = storageRef(storage, project.imagePath);
+        if (imagePath) {
+            const imageRef = storageRef(storage, imagePath);
             await deleteObject(imageRef).catch(err => console.error("Error deleting image:", err));
         }
 
         // Delete video from Storage
-        if (project.videoPath) {
-            const videoRef = storageRef(storage, project.videoPath);
+        if (videoPath) {
+            const videoRef = storageRef(storage, videoPath);
             await deleteObject(videoRef).catch(err => console.error("Error deleting video:", err));
         }
     }
