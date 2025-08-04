@@ -1,5 +1,6 @@
 import type { Project } from '@/types';
 
+// This file is now a fallback or for seeding, data is managed in Firestore.
 export const projects: Project[] = [
   {
     id: 'webapp-01',

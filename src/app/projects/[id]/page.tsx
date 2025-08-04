@@ -14,8 +14,9 @@ type ProjectPageProps = {
   };
 };
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = getProjectById(params.id);
+// Make the component async to fetch data
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const project = await getProjectById(params.id);
 
   if (!project) {
     notFound();

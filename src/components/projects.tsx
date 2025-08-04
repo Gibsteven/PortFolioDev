@@ -2,9 +2,13 @@
 
 import { useMemo } from 'react';
 import { ProjectCard } from '@/components/project-card';
-import { getAllProjects } from '@/lib/project-utils';
 import { useLanguage } from '@/hooks/use-language';
 import { motion } from 'framer-motion';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { collection } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { Project } from '@/types';
+import { Skeleton } from './ui/skeleton';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -28,8 +32,14 @@ const itemVariants = {
   };
 
 export function Projects() {
-  const projects = getAllProjects();
   const { t } = useLanguage();
+  const [projectsSnapshot, loading] = useCollection(collection(db, 'projects'));
+  
+  const projects = useMemo(() => {
+      if (loading || !projectsSnapshot) return [];
+      return projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+  }, [projectsSnapshot, loading]);
+
 
   const { webProjects, mobileProjects } = useMemo(() => {
     const webProjects = projects.filter(p => p.type === 'Web App' || p.type === 'Full-Stack');
@@ -58,7 +68,15 @@ export function Projects() {
                 </p>
             </motion.div>
             
-            {webProjects.length > 0 && (
+            {loading && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <Skeleton className="h-[400px] w-full" />
+                    <Skeleton className="h-[400px] w-full" />
+                    <Skeleton className="h-[400px] w-full" />
+                </div>
+            )}
+
+            {!loading && webProjects.length > 0 && (
                 <div className="mb-16">
                     <motion.h3 
                         className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-8"
@@ -85,7 +103,7 @@ export function Projects() {
                 </div>
             )}
 
-            {mobileProjects.length > 0 && (
+            {!loading && mobileProjects.length > 0 && (
                  <div>
                     <motion.h3 
                         className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mb-8"
