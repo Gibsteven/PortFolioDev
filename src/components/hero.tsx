@@ -83,8 +83,8 @@ export function Hero() {
     <section 
         id="hero" 
         className="h-screen w-full flex flex-col justify-center items-start text-left bg-cover bg-center bg-no-repeat pl-[5%]"
-        style={{backgroundImage: "url('https://placehold.co/1920x1080.png?text=')"}}
-        data-ai-hint="abstract background"
+        style={{backgroundImage: "url('https://placehold.co/1920x1080.png')"}}
+        data-ai-hint="abstract code"
     >
         <div className="absolute inset-0 bg-black/50" />
         <motion.div 
