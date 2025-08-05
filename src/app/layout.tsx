@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
 import { PageLoader } from '@/components/page-loader';
 import { Sidebar } from '@/components/sidebar';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Dev Showcase',
@@ -23,7 +24,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <PageLoader />
+        <Suspense>
+          <PageLoader />
+        </Suspense>
         <LanguageProvider>
           <div className="flex">
             <Sidebar />

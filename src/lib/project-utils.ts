@@ -37,7 +37,7 @@ export async function getProjectById(id: string): Promise<Project | undefined> {
     }
 }
 
-export async function addProject(projectData: Omit<Project, 'id' | 'imagePath' | 'videoPath'> & { image: string, imagePath: string, video?: string, videoPath?: string }) {
+export async function addProject(projectData: Omit<Project, 'id'>) {
     const newProjectRef = push(dbRef);
     await set(newProjectRef, projectData);
     return newProjectRef.key;
