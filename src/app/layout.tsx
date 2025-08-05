@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/header';
 import { LanguageProvider } from '@/hooks/use-language';
-import { Footer } from '@/components/footer';
 import { PageLoader } from '@/components/page-loader';
+import { Sidebar } from '@/components/sidebar';
 
 export const metadata: Metadata = {
   title: 'Dev Showcase',
@@ -21,16 +20,17 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased min-h-screen flex flex-col bg-background text-foreground">
+      <body className="font-body antialiased bg-background text-foreground">
         <PageLoader />
         <LanguageProvider>
-          <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <div className="flex">
+            <Sidebar />
+            <main className="flex-grow md:ml-80">
+                {children}
+            </main>
+          </div>
           <Toaster />
         </LanguageProvider>
       </body>

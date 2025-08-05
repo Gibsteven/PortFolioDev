@@ -15,7 +15,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05,
+      staggerChildren: 0.1,
     },
   },
 };
@@ -26,7 +26,7 @@ const itemVariants = {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.4,
+        duration: 0.5,
       },
     },
   };
@@ -41,95 +41,52 @@ export function Projects() {
   }, [snapshots, loading]);
 
 
-  const { webProjects, mobileProjects } = useMemo(() => {
-    const webProjects = projects.filter(p => p.type === 'Web App' || p.type === 'Full-Stack');
+  const { webProjects, mobileProjects, fullStackProjects } = useMemo(() => {
+    const webProjects = projects.filter(p => p.type === 'Web App');
     const mobileProjects = projects.filter(p => p.type === 'Mobile App');
-    return { webProjects, mobileProjects };
+    const fullStackProjects = projects.filter(p => p.type === 'Full-Stack');
+    return { webProjects, mobileProjects, fullStackProjects };
   }, [projects]);
+  
+  const allProjects = [...fullStackProjects, ...webProjects, ...mobileProjects];
 
   return (
-    <section 
+    <motion.section 
         id="projects" 
-        className="py-16 sm:py-20 bg-secondary/50"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={containerVariants}
     >
-        <div className="container mx-auto px-4">
-            <motion.div 
-                className="text-center mb-12"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={itemVariants}
-            >
-                <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tighter mb-3">
-                    {t('projects.title')}
-                </h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                    {t('projects.description')}
-                </p>
-            </motion.div>
-            
-            {loading && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Skeleton className="h-[350px] w-full" />
-                    <Skeleton className="h-[350px] w-full" />
-                    <Skeleton className="h-[350px] w-full" />
-                </div>
-            )}
-
-            {!loading && webProjects.length > 0 && (
-                <div className="mb-12">
-                    <motion.h3 
-                        className="font-headline text-xl md:text-2xl font-bold tracking-tighter mb-6"
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.3 }}
-                        variants={itemVariants}
-                    >
-                        Web Applications
-                    </motion.h3>
-                    <motion.div 
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
-                        variants={containerVariants}
-                    >
-                        {webProjects.map((project) => (
-                           <motion.div key={project.id} variants={itemVariants}>
-                             <ProjectCard project={project} />
-                           </motion.div>
-                        ))}
-                    </motion.div>
-                </div>
-            )}
-
-            {!loading && mobileProjects.length > 0 && (
-                 <div>
-                    <motion.h3 
-                        className="font-headline text-xl md:text-2xl font-bold tracking-tighter mb-6"
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.3 }}
-                        variants={itemVariants}
-                    >
-                        Mobile Applications
-                    </motion.h3>
-                    <motion.div 
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
-                        variants={containerVariants}
-                    >
-                        {mobileProjects.map((project) => (
-                            <motion.div key={project.id} variants={itemVariants}>
-                                <ProjectCard project={project} />
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </div>
-            )}
+        <div className="text-center mb-10">
+            <h2 className="font-headline text-3xl font-bold border-b-4 border-primary inline-block pb-2">
+                {t('projects.title')}
+            </h2>
+            <p className="text-muted-foreground mt-4 max-w-3xl mx-auto">
+                {t('projects.description')}
+            </p>
         </div>
-    </section>
+        
+        {loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Skeleton className="h-[350px] w-full" />
+                <Skeleton className="h-[350px] w-full" />
+                <Skeleton className="h-[350px] w-full" />
+            </div>
+        )}
+
+        {!loading && projects.length > 0 && (
+             <motion.div 
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                variants={containerVariants}
+            >
+                {allProjects.map((project) => (
+                   <motion.div key={project.id} variants={itemVariants}>
+                     <ProjectCard project={project} />
+                   </motion.div>
+                ))}
+            </motion.div>
+        )}
+    </motion.section>
   );
 }

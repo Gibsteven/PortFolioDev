@@ -4,47 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 94.1%; /* Light Gray (#F0F0F0) */
+    --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 278 100% 25.5%; /* Indigo (#4B0082) */
+    --primary: 207 90% 54%; /* Blue (#149ddd) */
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 180 100% 25.1%; /* Teal (#008080) */
+    --accent: 207 90% 54%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 278 100% 25.5%;
+    --ring: 207 90% 54%;
     --radius: 0.5rem;
   }
+
   .dark {
-    --background: 222.2 47.4% 11.2%;
+    --background: 224 71% 4%;
     --foreground: 0 0% 98%;
-    --card: 222.2 47.4% 11.2%;
+    --card: 224 71% 4%;
     --card-foreground: 0 0% 98%;
-    --popover: 222.2 47.4% 11.2%;
+    --popover: 224 71% 4%;
     --popover-foreground: 0 0% 98%;
-    --primary: 278 100% 75.5%;
+    --primary: 207 90% 54%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 0 0% 62.8%;
-    --accent: 180 100% 35.1%;
+    --accent: 207 90% 54%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 278 100% 75.5%;
+    --ring: 207 90% 54%;
   }
 }
 
@@ -54,5 +55,8 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  section {
+    @apply py-12 sm:py-16;
   }
 }

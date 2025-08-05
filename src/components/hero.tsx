@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
-import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
@@ -15,8 +13,8 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
     },
   },
 };
@@ -27,7 +25,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.4,
+      duration: 0.5,
       ease: "easeOut",
     },
   },
@@ -38,36 +36,36 @@ export function Hero() {
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
   
   const heroTitle = loading ? <Skeleton className="h-12 w-3/4" /> :
-    profile?.name ? `Hi, I'm ${profile.name}` : t('hero.title');
+    profile?.name ? profile.name : t('hero.title');
+  
+  const heroSubtitle = loading ? <Skeleton className="h-8 w-1/2 mt-2" /> : t('hero.subtitle');
 
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-b from-background to-secondary/30">
+    <section 
+        id="hero" 
+        className="h-screen w-full flex flex-col justify-center items-center text-center bg-cover bg-center bg-no-repeat"
+        style={{backgroundImage: "url('https://placehold.co/1920x1080.png?text=')"}}
+        data-ai-hint="abstract background"
+    >
+        <div className="absolute inset-0 bg-black/50" />
         <motion.div 
-            className="container mx-auto px-4 text-center"
+            className="container mx-auto px-4 text-white relative z-10"
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
+            animate="visible"
             variants={containerVariants}
         >
             <motion.h1 
-                className="font-headline text-3xl md:text-4xl font-extrabold tracking-tighter mb-4"
+                className="font-headline text-4xl md:text-6xl font-bold tracking-tight mb-4"
                 variants={itemVariants}
             >
                 {heroTitle}
             </motion.h1>
             <motion.p 
-                className="text-muted-foreground max-w-2xl mx-auto mb-6"
+                className="text-lg md:text-2xl max-w-3xl mx-auto"
                 variants={itemVariants}
             >
-                {t('hero.subtitle')}
+                {heroSubtitle}
             </motion.p>
-            <motion.div variants={itemVariants}>
-                <Button asChild>
-                    <a href="mailto:contact@example.com">
-                        {t('hero.contactButton')} <ArrowRight />
-                    </a>
-                </Button>
-            </motion.div>
       </motion.div>
     </section>
   );

@@ -7,11 +7,13 @@ import { About } from '@/components/about';
 
 export default function Home() {
   return (
-    <>
+    <div id="home">
       <Hero />
-      <About />
-      <Skills />
-      <Projects />
-    </>
+      <div className="container mx-auto px-4">
+        <About />
+        <Skills />
+        <Projects />
+      </div>
+    </div>
   );
 }
