@@ -37,8 +37,8 @@ export function About() {
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
 
   const renderDetail = (label: string, value: string | undefined) => (
-      <li className="flex items-center gap-2">
-        <ChevronRight className="text-primary w-4 h-4" />
+      <li className="flex items-center gap-1.5 text-sm">
+        <ChevronRight className="text-primary w-3 h-3" />
         <strong>{label}:</strong>
         <span>{value || 'N/A'}</span>
       </li>
@@ -46,17 +46,17 @@ export function About() {
   
   if (loading) {
     return (
-        <section id="about" className="py-12 sm:py-16">
-            <div className="text-center mb-10">
-                <h2 className="font-headline text-3xl font-bold border-b-4 border-primary inline-block pb-2">About</h2>
+        <section id="about" className="py-8 sm:py-12">
+            <div className="text-center mb-8">
+                <h2 className="font-headline text-2xl font-bold border-b-2 border-primary inline-block pb-1">About</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Skeleton className="w-full h-96" />
-                <div className="md:col-span-2 space-y-4">
-                    <Skeleton className="h-8 w-1/3" />
-                    <Skeleton className="h-5 w-full" />
-                    <Skeleton className="h-5 w-full" />
-                    <Skeleton className="h-5 w-4/5" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Skeleton className="w-full h-80" />
+                <div className="md:col-span-2 space-y-3">
+                    <Skeleton className="h-7 w-1/3" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-4/5" />
                 </div>
             </div>
         </section>
@@ -71,29 +71,29 @@ export function About() {
       viewport={{ once: true, amount: 0.2 }}
       variants={containerVariants}
     >
-        <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold border-b-4 border-primary inline-block pb-2">About</h2>
-            <p className="text-muted-foreground mt-4 max-w-3xl mx-auto">{profile?.aboutDescription || t('about.description')}</p>
+        <div className="text-center mb-8">
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary inline-block pb-1">About</h2>
+            <p className="text-muted-foreground text-sm mt-3 max-w-2xl mx-auto">{profile?.aboutDescription || t('about.description')}</p>
         </div>
       
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-10">
             <motion.div variants={itemVariants}>
               <Image 
-                src={profile?.profilePicture || "https://placehold.co/600x600.png"} 
+                src={profile?.profilePicture || "https://placehold.co/450x450.png"} 
                 alt="Profile picture"
-                width={600}
-                height={600}
+                width={450}
+                height={450}
                 className="object-cover w-full h-auto rounded-md shadow-lg"
                 data-ai-hint="professional portrait" 
               />
             </motion.div>
 
             <motion.div className="md:col-span-2" variants={itemVariants}>
-                <h3 className="font-headline text-2xl font-bold text-primary mb-2">Full-Stack Developer</h3>
-                <p className="italic mb-4">
+                <h3 className="font-headline text-xl font-bold text-primary mb-1.5">Full-Stack Developer</h3>
+                <p className="italic mb-3 text-sm">
                     A passionate developer creating elegant and efficient solutions.
                 </p>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mb-4">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-3">
                     {renderDetail("Website", profile?.website)}
                     {renderDetail("Phone", profile?.phone)}
                     {renderDetail("City", profile?.city)}
@@ -101,7 +101,7 @@ export function About() {
                     {renderDetail("Email", profile?.email)}
                     {renderDetail("Freelance", profile?.freelance)}
                 </ul>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     I enjoy bringing ideas to life, from concept to deployment. I am a lifelong learner, always excited to explore new technologies and improve my craft.
                 </p>
             </motion.div>
@@ -109,15 +109,15 @@ export function About() {
 
         {profile?.cvUrl && (
           <motion.div variants={itemVariants} className="text-center">
-            <h3 className="font-headline text-2xl font-bold border-b-4 border-primary inline-block pb-2 mb-6">
+            <h3 className="font-headline text-xl font-bold border-b-2 border-primary inline-block pb-1 mb-4">
                 My Resume
             </h3>
-            <div className="mb-4">
-                <iframe src={profile.cvUrl} className="w-full max-w-4xl mx-auto h-[500px] border rounded-lg shadow-lg" title="CV"></iframe>
+            <div className="mb-3">
+                <iframe src={profile.cvUrl} className="w-full max-w-3xl mx-auto h-[400px] border rounded-lg shadow-lg" title="CV"></iframe>
             </div>
-            <Button asChild>
+            <Button asChild size="sm">
                 <a href={profile.cvUrl} target="_blank" download>
-                    <Download className="mr-2 h-4 w-4" />
+                    <Download className="mr-2 h-3 w-3" />
                     Download CV
                 </a>
             </Button>

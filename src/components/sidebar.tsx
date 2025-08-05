@@ -53,22 +53,22 @@ export function Sidebar() {
     };
     
     const SidebarContent = () => (
-        <div className="flex flex-col h-full bg-[#040b14] text-white p-6">
-            <div className="text-center mb-8">
-                {loading ? <Skeleton className="w-28 h-28 rounded-full mx-auto mb-4 bg-gray-700" /> :
+        <div className="flex flex-col h-full bg-[#040b14] text-white p-4">
+            <div className="text-center mb-6">
+                {loading ? <Skeleton className="w-24 h-24 rounded-full mx-auto mb-3 bg-gray-700" /> :
                 <Image
-                    src={profile?.profilePicture || "https://placehold.co/120x120.png"}
+                    src={profile?.profilePicture || "https://placehold.co/100x100.png"}
                     alt="Profile"
-                    width={120}
-                    height={120}
-                    className="rounded-full mx-auto mb-4 border-4 border-gray-700"
+                    width={100}
+                    height={100}
+                    className="rounded-full mx-auto mb-3 border-4 border-gray-700"
                     data-ai-hint="professional portrait"
                 />}
-                <h1 className="text-2xl font-bold">{loading ? <Skeleton className="h-8 w-32 mx-auto bg-gray-700" /> : profile?.name || 'Developer Name'}</h1>
-                <div className="flex justify-center gap-3 mt-3">
-                    <a href="https://github.com/Gibsteven" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Github size={20} /></a>
-                    <a href="https://www.linkedin.com/in/chogho-abel-ezechiel-esteve-646972345" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Linkedin size={20} /></a>
-                    <a href="https://wa.me/2250788645339" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><WhatsappIcon className="w-5 h-5" /></a>
+                <h1 className="text-xl font-bold">{loading ? <Skeleton className="h-7 w-28 mx-auto bg-gray-700" /> : profile?.name || 'Developer Name'}</h1>
+                <div className="flex justify-center gap-2 mt-2">
+                    <a href="https://github.com/Gibsteven" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Github size={18} /></a>
+                    <a href="https://www.linkedin.com/in/chogho-abel-ezechiel-esteve-646972345" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Linkedin size={18} /></a>
+                    <a href="https://wa.me/2250788645339" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><WhatsappIcon className="w-4 h-4" /></a>
                 </div>
             </div>
 
@@ -79,9 +79,9 @@ export function Sidebar() {
                             <a
                                 href={link.href}
                                 onClick={(e) => handleScroll(e, link.href)}
-                                className="flex items-center gap-4 px-3 py-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-md transition-colors"
+                                className="flex items-center gap-3 px-2 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-md transition-colors text-sm"
                             >
-                                <link.icon size={20} />
+                                <link.icon size={18} />
                                 <span>{link.name}</span>
                             </a>
                         </li>
@@ -89,7 +89,7 @@ export function Sidebar() {
                 </ul>
             </nav>
 
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-3">
               <LanguageSwitcher />
             </div>
 
@@ -113,7 +113,7 @@ export function Sidebar() {
                 {isOpen ? <X /> : <Menu />}
             </Button>
             
-            <aside className="hidden md:block fixed top-0 left-0 w-80 h-full z-40">
+            <aside className="hidden md:block fixed top-0 left-0 w-60 h-full z-40">
                 <SidebarContent />
             </aside>
             

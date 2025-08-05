@@ -58,26 +58,26 @@ export function Projects() {
         viewport={{ once: true, amount: 0.1 }}
         variants={containerVariants}
     >
-        <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold border-b-4 border-primary inline-block pb-2">
+        <div className="text-center mb-8">
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary inline-block pb-1">
                 {t('projects.title')}
             </h2>
-            <p className="text-muted-foreground mt-4 max-w-3xl mx-auto">
+            <p className="text-muted-foreground text-sm mt-3 max-w-2xl mx-auto">
                 {t('projects.description')}
             </p>
         </div>
         
         {loading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Skeleton className="h-[350px] w-full" />
-                <Skeleton className="h-[350px] w-full" />
-                <Skeleton className="h-[350px] w-full" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Skeleton className="h-[260px] w-full" />
+                <Skeleton className="h-[260px] w-full" />
+                <Skeleton className="h-[260px] w-full" />
             </div>
         )}
 
         {!loading && projects.length > 0 && (
              <motion.div 
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                 variants={containerVariants}
             >
                 {allProjects.map((project) => (

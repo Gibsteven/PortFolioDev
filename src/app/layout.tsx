@@ -27,7 +27,7 @@ export default function RootLayout({
         <LanguageProvider>
           <div className="flex">
             <Sidebar />
-            <main className="flex-grow md:ml-80">
+            <main className="flex-grow md:ml-60">
                 {children}
             </main>
           </div>

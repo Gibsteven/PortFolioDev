@@ -37,7 +37,7 @@ export function Hero() {
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
   const [typedText, setTypedText] = useState('');
   
-  const heroTitle = loading ? <Skeleton className="h-12 w-3/4" /> :
+  const heroTitle = loading ? <Skeleton className="h-10 w-3/4" /> :
     profile?.name ? `I'm ${profile.name}` : t('hero.title');
   
   const stringsToType = [
@@ -94,13 +94,13 @@ export function Hero() {
             variants={containerVariants}
         >
             <motion.h1 
-                className="font-headline text-4xl md:text-6xl font-bold tracking-tight mb-4"
+                className="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-3"
                 variants={itemVariants}
             >
                 {heroTitle}
             </motion.h1>
             <motion.div 
-                className="text-lg md:text-2xl max-w-3xl"
+                className="text-md md:text-xl max-w-2xl"
                 variants={itemVariants}
             >
                 <span>I am {typedText}</span>
