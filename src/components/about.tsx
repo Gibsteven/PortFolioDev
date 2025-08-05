@@ -94,12 +94,12 @@ export function About() {
                     A passionate developer creating elegant and efficient solutions.
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mb-4">
-                    {renderDetail("Website", "www.example.com")}
-                    {renderDetail("Phone", "+123 456 7890")}
-                    {renderDetail("City", "New York, USA")}
-                    {renderDetail("Degree", "Master")}
-                    {renderDetail("Email", "email@example.com")}
-                    {renderDetail("Freelance", "Available")}
+                    {renderDetail("Website", profile?.website)}
+                    {renderDetail("Phone", profile?.phone)}
+                    {renderDetail("City", profile?.city)}
+                    {renderDetail("Degree", profile?.degree)}
+                    {renderDetail("Email", profile?.email)}
+                    {renderDetail("Freelance", profile?.freelance)}
                 </ul>
                 <p className="text-muted-foreground">
                     I enjoy bringing ideas to life, from concept to deployment. I am a lifelong learner, always excited to explore new technologies and improve my craft.

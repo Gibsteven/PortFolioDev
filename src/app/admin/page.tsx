@@ -63,6 +63,12 @@ const profileSchema = z.object({
     aboutDescription: z.string().min(20, 'About description must be at least 20 characters.'),
     profilePicture: z.any().refine((files) => files?.[0]?.size <= 5000000, `Max file size is 5MB.`).optional(),
     cv: z.any().refine((files) => files?.[0]?.size <= 10000000, `Max file size is 10MB.`).optional(),
+    website: z.string().url().optional().or(z.literal('')),
+    phone: z.string().optional(),
+    city: z.string().optional(),
+    degree: z.string().optional(),
+    email: z.string().email().optional().or(z.literal('')),
+    freelance: z.string().optional(),
 });
 
 
@@ -96,6 +102,12 @@ function AdminPage() {
       aboutDescription: '',
       profilePicture: undefined,
       cv: undefined,
+      website: '',
+      phone: '',
+      city: '',
+      degree: '',
+      email: '',
+      freelance: '',
     },
   });
 
@@ -104,6 +116,12 @@ function AdminPage() {
       profileForm.reset({
         name: profile.name,
         aboutDescription: profile.aboutDescription,
+        website: profile.website,
+        phone: profile.phone,
+        city: profile.city,
+        degree: profile.degree,
+        email: profile.email,
+        freelance: profile.freelance,
       });
     }
   }, [profile, profileForm]);
@@ -321,6 +339,62 @@ function AdminPage() {
                                 </FormItem>
                               )}
                             />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                               <FormField control={profileForm.control} name="website" render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Website</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="https://example.com" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                               <FormField control={profileForm.control} name="phone" render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Phone</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="+123 456 7890" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                               <FormField control={profileForm.control} name="city" render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>City</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="New York, USA" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                               <FormField control={profileForm.control} name="degree" render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Degree</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Master" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                               <FormField control={profileForm.control} name="email" render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Email</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="email@example.com" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                               <FormField control={profileForm.control} name="freelance" render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Freelance</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Available" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )} />
+                            </div>
                             <FormField
                                 control={profileForm.control}
                                 name="profilePicture"

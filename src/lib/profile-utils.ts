@@ -1,5 +1,5 @@
 import type { Profile } from '@/types';
-import { ref, get, set } from 'firebase/database';
+import { ref, get, set, update } from 'firebase/database';
 import { database } from './firebase';
 
 const dbRef = ref(database, 'profile');
@@ -19,5 +19,7 @@ export async function getProfile(): Promise<Profile | null> {
 }
 
 export async function updateProfile(profileData: Partial<Profile>) {
-    await set(dbRef, profileData);
+    const currentProfile = await getProfile() || {};
+    const newProfileData = { ...currentProfile, ...profileData };
+    await set(dbRef, newProfileData);
 }

@@ -11,6 +11,7 @@ import { database } from '@/lib/firebase';
 import { Skeleton } from './ui/skeleton';
 import { useState } from 'react';
 import { Button } from './ui/button';
+import { LanguageSwitcher } from './language-switcher';
 
 function WhatsappIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -87,6 +88,10 @@ export function Sidebar() {
                     ))}
                 </ul>
             </nav>
+
+            <div className="flex justify-center mb-4">
+              <LanguageSwitcher />
+            </div>
 
             <footer className="text-center text-xs text-gray-500">
                 <p>&copy; {new Date().getFullYear()} All rights reserved.</p>

@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Project } from '@/types';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Plus } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { ArrowUpRight } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -12,25 +12,28 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <Card className="group overflow-hidden relative h-full flex flex-col">
-        <CardHeader className="p-0">
-            <div className="aspect-video relative">
-                <Image
-                src={project.image}
-                alt={project.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-                data-ai-hint={project['data-ai-hint']}
-                />
-            </div>
-        </CardHeader>
-        <CardContent className="absolute inset-0 bg-black/80 flex flex-col justify-center items-center text-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <CardTitle className="text-white font-headline text-xl mb-2">{project.title}</CardTitle>
-            <CardDescription className="text-gray-300 mb-4">{project.type}</CardDescription>
-             <Link href={`/projects/${project.id}`} className="bg-primary text-white rounded-full p-3 hover:bg-primary/80 transition-colors">
-                <Plus size={24} />
-             </Link>
-        </CardContent>
-    </Card>
+    <Link href={`/projects/${project.id}`}>
+        <Card className="group overflow-hidden relative h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+            <CardHeader className="p-0">
+                <div className="aspect-video relative">
+                    <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    data-ai-hint={project['data-ai-hint']}
+                    />
+                </div>
+            </CardHeader>
+            <CardContent className="p-4 flex-grow flex flex-col">
+                <CardTitle className="text-lg font-headline mb-1 group-hover:text-primary transition-colors">{project.title}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground flex-grow">{project.shortDescription}</CardDescription>
+                <div className="flex justify-between items-center mt-4">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-primary">{project.type}</span>
+                    <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-all duration-300 group-hover:rotate-45" />
+                </div>
+            </CardContent>
+        </Card>
+    </Link>
   );
 }

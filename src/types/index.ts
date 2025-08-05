@@ -20,4 +20,10 @@ export type Profile = {
   profilePicturePath?: string;
   cvUrl?: string;
   cvPath?: string;
+  website?: string;
+  phone?: string;
+  city?: string;
+  degree?: string;
+  email?: string;
+  freelance?: string;
 };
