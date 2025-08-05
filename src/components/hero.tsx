@@ -7,6 +7,7 @@ import { ref } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import type { Profile } from '@/types';
 import { Skeleton } from './ui/skeleton';
+import { useEffect, useState } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,16 +35,54 @@ const itemVariants = {
 export function Hero() {
   const { t } = useLanguage();
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
+  const [typedText, setTypedText] = useState('');
   
   const heroTitle = loading ? <Skeleton className="h-12 w-3/4" /> :
-    profile?.name ? profile.name : t('hero.title');
+    profile?.name ? `I'm ${profile.name}` : t('hero.title');
   
-  const heroSubtitle = loading ? <Skeleton className="h-8 w-1/2 mt-2" /> : t('hero.subtitle');
+  const stringsToType = [
+      "a Developer",
+      "a Freelancer",
+      "a Designer"
+  ];
+
+  useEffect(() => {
+    let stringIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let timeoutId: NodeJS.Timeout;
+
+    const type = () => {
+        const currentString = stringsToType[stringIndex];
+        if (isDeleting) {
+            setTypedText(currentString.substring(0, charIndex - 1));
+            charIndex--;
+        } else {
+            setTypedText(currentString.substring(0, charIndex + 1));
+            charIndex++;
+        }
+
+        if (!isDeleting && charIndex === currentString.length) {
+            isDeleting = true;
+            timeoutId = setTimeout(type, 2000); // Pause at end
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            stringIndex = (stringIndex + 1) % stringsToType.length;
+            timeoutId = setTimeout(type, 500); // Pause before typing new string
+        } else {
+            timeoutId = setTimeout(type, isDeleting ? 75 : 150);
+        }
+    };
+
+    type();
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return (
     <section 
         id="hero" 
-        className="h-screen w-full flex flex-col justify-center items-center text-center bg-cover bg-center bg-no-repeat"
+        className="h-screen w-full flex flex-col justify-center items-start text-left bg-cover bg-center bg-no-repeat pl-[5%]"
         style={{backgroundImage: "url('https://placehold.co/1920x1080.png?text=')"}}
         data-ai-hint="abstract background"
     >
@@ -60,12 +99,13 @@ export function Hero() {
             >
                 {heroTitle}
             </motion.h1>
-            <motion.p 
-                className="text-lg md:text-2xl max-w-3xl mx-auto"
+            <motion.div 
+                className="text-lg md:text-2xl max-w-3xl"
                 variants={itemVariants}
             >
-                {heroSubtitle}
-            </motion.p>
+                <span>I am {typedText}</span>
+                <span className="animate-ping">|</span>
+            </motion.div>
       </motion.div>
     </section>
   );
