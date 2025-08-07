@@ -54,6 +54,7 @@ export function Hero() {
 
     const type = () => {
         const currentString = stringsToType[stringIndex];
+        
         if (isDeleting) {
             setTypedText(currentString.substring(0, charIndex - 1));
             charIndex--;
@@ -62,16 +63,18 @@ export function Hero() {
             charIndex++;
         }
 
+        let typeSpeed = isDeleting ? 75 : 150;
+
         if (!isDeleting && charIndex === currentString.length) {
             isDeleting = true;
-            timeoutId = setTimeout(type, 2000); // Pause at end
+            typeSpeed = 2000; // Pause at end
         } else if (isDeleting && charIndex === 0) {
             isDeleting = false;
             stringIndex = (stringIndex + 1) % stringsToType.length;
-            timeoutId = setTimeout(type, 500); // Pause before typing new string
-        } else {
-            timeoutId = setTimeout(type, isDeleting ? 75 : 150);
+            typeSpeed = 500; // Pause before typing new string
         }
+
+        timeoutId = setTimeout(type, typeSpeed);
     };
 
     type();
