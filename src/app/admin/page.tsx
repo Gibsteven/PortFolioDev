@@ -134,13 +134,16 @@ function AdminPage() {
   }, [user, loading, router]);
 
   async function onProjectSubmit(values: z.infer<typeof projectSchema>) {
+    console.log("Project form submitted with values:", values);
     try {
         // Handle Image Upload
         const imageFile = values.image[0] as File;
         const imageStorageRef = storageRef(storage, `projects/${Date.now()}-${imageFile.name}`);
+        console.log(`Uploading project image to ${imageStorageRef.fullPath}...`);
         const imageUploadResult = await uploadBytes(imageStorageRef, imageFile);
         const imageUrl = await getDownloadURL(imageUploadResult.ref);
         const imagePath = imageUploadResult.ref.fullPath;
+        console.log("Project image uploaded successfully. URL:", imageUrl);
 
         let videoUrl: string | undefined = undefined;
         let videoPath: string | undefined = undefined;
@@ -149,9 +152,11 @@ function AdminPage() {
         if (values.video && values.video.length > 0) {
             const videoFile = values.video[0] as File;
             const videoStorageRef = storageRef(storage, `projects/${Date.now()}-${videoFile.name}`);
+            console.log(`Uploading project video to ${videoStorageRef.fullPath}...`);
             const videoUploadResult = await uploadBytes(videoStorageRef, videoFile);
             videoUrl = await getDownloadURL(videoUploadResult.ref);
             videoPath = videoUploadResult.ref.fullPath;
+            console.log("Project video uploaded successfully. URL:", videoUrl);
         }
 
         const tagsArray = values.tags.split(',').map(tag => tag.trim());
@@ -171,7 +176,7 @@ function AdminPage() {
         });
         projectForm.reset();
     } catch (error) {
-        console.error("Error adding document: ", error);
+        console.error("Error adding project document: ", error);
         toast({
             variant: "destructive",
             title: "Error",
@@ -181,6 +186,7 @@ function AdminPage() {
   }
 
   async function onProfileSubmit(values: z.infer<typeof profileSchema>) {
+    console.log("Profile form submitted with values:", values);
     try {
         let imageUrl = profile?.profilePicture;
         let imagePath = profile?.profilePicturePath;
@@ -190,17 +196,21 @@ function AdminPage() {
         if (values.profilePicture && values.profilePicture.length > 0) {
             const imageFile = values.profilePicture[0] as File;
             const imageStorageRef = storageRef(storage, `profile/${Date.now()}-${imageFile.name}`);
+            console.log(`Uploading profile picture to ${imageStorageRef.fullPath}...`);
             const uploadResult = await uploadBytes(imageStorageRef, imageFile);
             imageUrl = await getDownloadURL(uploadResult.ref);
             imagePath = uploadResult.ref.fullPath;
+            console.log("Profile picture uploaded successfully. URL:", imageUrl);
         }
 
         if (values.cv && values.cv.length > 0) {
             const cvFile = values.cv[0] as File;
             const cvStorageRef = storageRef(storage, `profile/${Date.now()}-${cvFile.name}`);
+            console.log(`Uploading CV to ${cvStorageRef.fullPath}...`);
             const uploadResult = await uploadBytes(cvStorageRef, cvFile);
             cvUrl = await getDownloadURL(uploadResult.ref);
             cvPath = uploadResult.ref.fullPath;
+            console.log("CV uploaded successfully. URL:", cvUrl);
         }
 
         await updateProfile({
@@ -231,6 +241,7 @@ function AdminPage() {
 
   async function handleDelete(project: Project) {
     if (window.confirm("Are you sure you want to delete this project?")) {
+        console.log(`User confirmed deletion for project ID: ${project.id}`);
         try {
             await deleteProject(project.id, project.imagePath, project.videoPath);
             toast({
@@ -238,7 +249,7 @@ function AdminPage() {
                 description: "The project has been deleted successfully.",
             });
         } catch (error) {
-            console.error("Error deleting document: ", error);
+            console.error(`Error deleting project ID ${project.id}: `, error);
             toast({
                 variant: "destructive",
                 title: "Error",
