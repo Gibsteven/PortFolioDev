@@ -44,6 +44,17 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { cn } from '@/lib/utils';
 
 
@@ -244,22 +255,20 @@ function AdminPage() {
 
 
   async function handleDelete(projectId: string, imagePath?: string, videoPath?: string) {
-    if (window.confirm("Are you sure you want to delete this project?")) {
-        console.log(`User confirmed deletion for project ID: ${projectId}`);
-        try {
-            await deleteProject(projectId, imagePath, videoPath);
-            toast({
-                title: "Project Deleted",
-                description: "The project has been deleted successfully.",
-            });
-        } catch (error) {
-            console.error(`Error deleting project ID ${projectId}: `, error);
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "There was a problem deleting the project.",
-            });
-        }
+    console.log(`User confirmed deletion for project ID: ${projectId}`);
+    try {
+        await deleteProject(projectId, imagePath, videoPath);
+        toast({
+            title: "Project Deleted",
+            description: "The project has been deleted successfully.",
+        });
+    } catch (error) {
+        console.error(`Error deleting project ID ${projectId}: `, error);
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "There was a problem deleting the project.",
+        });
     }
   }
 
@@ -339,9 +348,28 @@ function AdminPage() {
                                                 <Button variant="outline" size="icon" onClick={() => handleToggleStatus(project)}>
                                                     {project.status === 'active' ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                 </Button>
-                                                <Button variant="destructive" size="icon" onClick={() => handleDelete(project.id, project.imagePath, project.videoPath)}>
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="destructive" size="icon">
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot be undone. This will permanently delete your
+                                                            project and remove your data from our servers.
+                                                        </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => handleDelete(project.id, project.imagePath, project.videoPath)}>
+                                                            Continue
+                                                        </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
                                             </TableCell>
                                         </TableRow>
                                     )
