@@ -7,11 +7,12 @@ import { Home, User, FileText, Briefcase, Github, Linkedin, Menu, X } from 'luci
 import type { Profile } from '@/types';
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { ref } from 'firebase/database';
-import { database } from '@/lib/firebase';
+import { database, auth } from '@/lib/firebase';
 import { Skeleton } from './ui/skeleton';
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { LanguageSwitcher } from './language-switcher';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function WhatsappIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -39,6 +40,7 @@ const navLinks = [
 
 export function Sidebar() {
     const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
+    const [user, authLoading] = useAuthState(auth);
     const [isOpen, setIsOpen] = useState(false);
 
     const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
@@ -95,9 +97,11 @@ export function Sidebar() {
 
             <footer className="text-center text-xs text-gray-500">
                 <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
-                <Button asChild variant="link" size="sm" className="text-gray-500 p-0 h-auto">
-                    <Link href="/admin">Admin</Link>
-                </Button>
+                {!authLoading && user && (
+                    <Button asChild variant="link" size="sm" className="text-gray-500 p-0 h-auto">
+                        <Link href="/admin">Admin</Link>
+                    </Button>
+                )}
             </footer>
         </div>
     );
