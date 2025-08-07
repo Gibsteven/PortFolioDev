@@ -47,7 +47,7 @@ export async function getProjectById(id: string): Promise<Project | undefined> {
     }
 }
 
-export async function addProject(projectData: Omit<Project, 'id'>) {
+export async function addProject(projectData: Partial<Project>) {
     console.log("Attempting to add new project with data:", projectData);
     const newProjectRef = push(dbRef);
     await set(newProjectRef, projectData);
