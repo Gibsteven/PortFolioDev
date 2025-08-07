@@ -7,13 +7,13 @@ import { getFirestore } from 'firebase/firestore';
 
 
 const firebaseConfig = {
-  projectId: "dev-showcase-2thoo",
-  appId: "1:46213438407:web:1d770784d41455913c17e2",
-  storageBucket: "dev-showcase-2thoo.appspot.com",
-  apiKey: "AIzaSyCL_Hi2ZVImTU2wvsB2WwVX_4gSGzCM3lk",
-  authDomain: "dev-showcase-2thoo.firebaseapp.com",
-  messagingSenderId: "46213438407",
-  databaseURL: "https://dev-showcase-2thoo-default-rtdb.firebaseio.com",
+  projectId: "calltranslate-6e940",
+  appId: "1:760040948795:web:ad2136d647639c5ecfc81e",
+  storageBucket: "calltranslate-6e940.appspot.com",
+  apiKey: "AIzaSyBbPfWzqaYuTUUHcU_COZNY1Sjtytq4tWo",
+  authDomain: "calltranslate-6e940.firebaseapp.com",
+  messagingSenderId: "760040948795",
+  databaseURL: "https://calltranslate-6e940-default-rtdb.firebaseio.com", 
 };
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
