@@ -1,5 +1,5 @@
 import type { Project } from '@/types';
-import { ref, get, child, set, push, remove } from 'firebase/database';
+import { ref, get, child, set, push, remove, update } from 'firebase/database';
 import { ref as storageRef, deleteObject } from "firebase/storage";
 import { database, storage } from './firebase';
 
@@ -47,12 +47,19 @@ export async function getProjectById(id: string): Promise<Project | undefined> {
     }
 }
 
-export async function addProject(projectData: Partial<Project>) {
+export async function addProject(projectData: Omit<Project, 'id'>) {
     console.log("Attempting to add new project with data:", projectData);
     const newProjectRef = push(dbRef);
     await set(newProjectRef, projectData);
     console.log(`Project added successfully with ID: ${newProjectRef.key}`);
     return newProjectRef.key;
+}
+
+export async function updateProjectStatus(projectId: string, status: 'active' | 'suspended') {
+    console.log(`Attempting to update status for project ID: ${projectId} to ${status}`);
+    const projectRef = child(dbRef, projectId);
+    await update(projectRef, { status });
+    console.log(`Project ${projectId} status updated to ${status}.`);
 }
 
 export async function deleteProject(projectId: string, imagePath?: string, videoPath?: string) {

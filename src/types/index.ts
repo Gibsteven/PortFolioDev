@@ -11,6 +11,7 @@ export type Project = {
   tags: string[];
   url?: string;
   'data-ai-hint': string;
+  status: 'active' | 'suspended';
 };
 
 export type Profile = {

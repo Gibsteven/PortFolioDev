@@ -5,7 +5,7 @@ import { auth, database, storage } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,7 +13,7 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import { useToast } from '@/hooks/use-toast';
 import type { Project, Profile } from '@/types';
-import { addProject, deleteProject } from '@/lib/project-utils';
+import { addProject, deleteProject, updateProjectStatus } from '@/lib/project-utils';
 import { updateProfile } from '@/lib/profile-utils';
 import { ref as dbRef } from 'firebase/database';
 
@@ -44,7 +44,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
 
 const projectSchema = z.object({
     title: z.string().min(2, 'Title must be at least 2 characters.'),
@@ -161,14 +162,17 @@ function AdminPage() {
 
         const tagsArray = values.tags.split(',').map(tag => tag.trim());
         
-        await addProject({
+        const projectData: Omit<Project, 'id'> = {
             ...values,
             image: imageUrl,
             imagePath: imagePath,
             video: videoUrl,
             videoPath: videoPath,
             tags: tagsArray,
-        });
+            status: 'active', // Default status
+        };
+        
+        await addProject(projectData);
 
         toast({
             title: "Project Added",
@@ -239,17 +243,17 @@ function AdminPage() {
 }
 
 
-  async function handleDelete(project: Project) {
+  async function handleDelete(projectId: string, imagePath?: string, videoPath?: string) {
     if (window.confirm("Are you sure you want to delete this project?")) {
-        console.log(`User confirmed deletion for project ID: ${project.id}`);
+        console.log(`User confirmed deletion for project ID: ${projectId}`);
         try {
-            await deleteProject(project.id, project.imagePath, project.videoPath);
+            await deleteProject(projectId, imagePath, videoPath);
             toast({
                 title: "Project Deleted",
                 description: "The project has been deleted successfully.",
             });
         } catch (error) {
-            console.error(`Error deleting project ID ${project.id}: `, error);
+            console.error(`Error deleting project ID ${projectId}: `, error);
             toast({
                 variant: "destructive",
                 title: "Error",
@@ -258,6 +262,26 @@ function AdminPage() {
         }
     }
   }
+
+  async function handleToggleStatus(project: Project) {
+    const newStatus = project.status === 'active' ? 'suspended' : 'active';
+    console.log(`Toggling status for project ID: ${project.id} to ${newStatus}`);
+    try {
+        await updateProjectStatus(project.id, newStatus);
+        toast({
+            title: `Project ${newStatus === 'active' ? 'Restored' : 'Suspended'}`,
+            description: `The project is now ${newStatus}.`,
+        });
+    } catch (error) {
+        console.error(`Error toggling status for project ID ${project.id}: `, error);
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "There was a problem updating the project status.",
+        });
+    }
+  }
+
 
   if (loading || !user) {
     return (
@@ -292,18 +316,30 @@ function AdminPage() {
                                 <TableRow>
                                     <TableHead>Title</TableHead>
                                     <TableHead>Type</TableHead>
-                                    <TableHead>Actions</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {projectsLoading && <TableRow><TableCell colSpan={3} className="text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></TableCell></TableRow>}
+                                {projectsLoading && <TableRow><TableCell colSpan={4} className="text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></TableCell></TableRow>}
                                 {!projectsLoading && projects.map(project => {
                                     return (
                                         <TableRow key={project.id}>
                                             <TableCell className="font-medium">{project.title}</TableCell>
                                             <TableCell>{project.type}</TableCell>
                                             <TableCell>
-                                                <Button variant="destructive" size="icon" onClick={() => handleDelete(project)}>
+                                                <span className={cn(
+                                                    "px-2 py-1 rounded-full text-xs font-medium",
+                                                    project.status === 'active' ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                                                )}>
+                                                    {project.status || 'active'}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-right space-x-2">
+                                                <Button variant="outline" size="icon" onClick={() => handleToggleStatus(project)}>
+                                                    {project.status === 'active' ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                                </Button>
+                                                <Button variant="destructive" size="icon" onClick={() => handleDelete(project.id, project.imagePath, project.videoPath)}>
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </TableCell>

@@ -41,14 +41,10 @@ export function Projects() {
   }, [snapshots, loading]);
 
 
-  const { webProjects, mobileProjects, fullStackProjects } = useMemo(() => {
-    const webProjects = projects.filter(p => p.type === 'Web App');
-    const mobileProjects = projects.filter(p => p.type === 'Mobile App');
-    const fullStackProjects = projects.filter(p => p.type === 'Full-Stack');
-    return { webProjects, mobileProjects, fullStackProjects };
+  const activeProjects = useMemo(() => {
+    return projects.filter(p => p.status === 'active' || p.status === undefined);
   }, [projects]);
   
-  const allProjects = [...fullStackProjects, ...webProjects, ...mobileProjects];
 
   return (
     <motion.section 
@@ -75,12 +71,12 @@ export function Projects() {
             </div>
         )}
 
-        {!loading && projects.length > 0 && (
+        {!loading && activeProjects.length > 0 && (
              <motion.div 
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                 variants={containerVariants}
             >
-                {allProjects.map((project) => (
+                {activeProjects.map((project) => (
                    <motion.div key={project.id} variants={itemVariants}>
                      <ProjectCard project={project} />
                    </motion.div>
