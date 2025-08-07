@@ -1,3 +1,4 @@
+
 import type { Project } from '@/types';
 import { ref, get, child, set, push, remove, update } from 'firebase/database';
 import { ref as storageRef, deleteObject } from "firebase/storage";
@@ -64,27 +65,32 @@ export async function updateProjectStatus(projectId: string, status: 'active' | 
 
 export async function deleteProject(projectId: string, imagePath?: string, videoPath?: string) {
     console.log(`Attempting to delete project with ID: ${projectId}`);
-    if (projectId) {
-        // Delete from Realtime Database
-        await remove(child(dbRef, projectId));
-        console.log(`Project ${projectId} deleted from Realtime Database.`);
-        
-        // Delete image from Storage
-        if (imagePath) {
-            console.log(`Attempting to delete image at path: ${imagePath}`);
-            const imageRef = storageRef(storage, imagePath);
-            await deleteObject(imageRef)
-                .then(() => console.log(`Image deleted successfully from: ${imagePath}`))
-                .catch(err => console.error("Error deleting image:", err));
-        }
-
-        // Delete video from Storage
-        if (videoPath) {
-            console.log(`Attempting to delete video at path: ${videoPath}`);
-            const videoRef = storageRef(storage, videoPath);
-            await deleteObject(videoRef)
-                .then(() => console.log(`Video deleted successfully from: ${videoPath}`))
-                .catch(err => console.error("Error deleting video:", err));
+    
+    // Delete image from Storage if path exists
+    if (imagePath) {
+        console.log(`Attempting to delete image at path: ${imagePath}`);
+        const imageRef = storageRef(storage, imagePath);
+        try {
+            await deleteObject(imageRef);
+            console.log(`Image deleted successfully from: ${imagePath}`);
+        } catch (err) {
+            console.error("Error deleting image, it might not exist or there's a permission issue:", err);
         }
     }
+
+    // Delete video from Storage if path exists
+    if (videoPath) {
+        console.log(`Attempting to delete video at path: ${videoPath}`);
+        const videoRef = storageRef(storage, videoPath);
+        try {
+            await deleteObject(videoRef);
+            console.log(`Video deleted successfully from: ${videoPath}`);
+        } catch (err) {
+            console.error("Error deleting video, it might not exist or there's a permission issue:", err);
+        }
+    }
+
+    // Delete from Realtime Database
+    await remove(child(dbRef, projectId));
+    console.log(`Project ${projectId} deleted from Realtime Database.`);
 }
