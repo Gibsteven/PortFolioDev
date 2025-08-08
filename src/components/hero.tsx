@@ -44,9 +44,9 @@ const itemVariants = {
 };
 
 const carouselImages = [
-    { src: "https://placehold.co/1920x1080.png", alt: "Nature morte avec des roses", hint: "photographie nature morte roses" },
-    { src: "https://placehold.co/1920x1080.png", alt: "Podium en bois sur fond vert", hint: "podium bois exposition" },
-    { src: "https://placehold.co/1920x1080.png", alt: "Personnage 3D sortant d'un smartphone", hint: "personnage 3d smartphone" },
+    { src: "/images/photographie-de-la-nature-morte-avec-des-roses.png", alt: "Nature morte avec des roses", hint: "photographie nature morte roses" },
+    { src: "/images/podium-en-bois-d-exposition-de-stand-de-publicite-de-produits-cosmetiques-sur-fond-vert-avec-feuilles-et-sha.png", alt: "Podium en bois sur fond vert", hint: "podium bois exposition" },
+    { src: "/images/un-personnage-3d-emergeant-d-un-smartphone.png", alt: "Personnage 3D sortant d'un smartphone", hint: "personnage 3d smartphone" },
 ]
 
 export function Hero() {
