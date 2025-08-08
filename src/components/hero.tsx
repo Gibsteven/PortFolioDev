@@ -44,9 +44,9 @@ const itemVariants = {
 };
 
 const carouselImages = [
-    { src: "/images/photographie-de-la-nature-morte-avec-des-roses.png", alt: "Nature morte avec des roses", hint: "photographie nature morte roses" },
-    { src: "/images/podium-en-bois-d-exposition-de-stand-de-publicite-de-produits-cosmetiques-sur-fond-vert-avec-feuilles-et-sha.png", alt: "Podium en bois sur fond vert", hint: "podium bois exposition" },
-    { src: "/images/un-personnage-3d-emergeant-d-un-smartphone.png", alt: "Personnage 3D sortant d'un smartphone", hint: "personnage 3d smartphone" },
+    { src: "/images/photographie-de-la-nature-morte-avec-des-roses.jpg", alt: "Nature morte avec des roses", hint: "photographie nature morte roses" },
+    { src: "/images/podium-en-bois-d-exposition-de-stand-de-publicite-de-produits-cosmetiques-sur-fond-vert-avec-feuilles-et-sha.jpg", alt: "Podium en bois sur fond vert", hint: "podium bois exposition" },
+    { src: "/images/un-personnage-3d-emergeant-d-un-smartphone.jpg", alt: "Personnage 3D sortant d'un smartphone", hint: "personnage 3d smartphone" },
 ]
 
 export function Hero() {
