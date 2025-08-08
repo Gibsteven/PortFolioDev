@@ -53,6 +53,11 @@ export function Hero() {
   const { t } = useLanguage();
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
   const [typedText, setTypedText] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   const heroTitle = loading ? <Skeleton className="h-10 w-3/4" /> :
     profile?.name ? `I'm ${profile.name}` : t('hero.title');
@@ -111,6 +116,7 @@ export function Hero() {
         id="hero" 
         className="h-screen w-full flex flex-col justify-center items-start text-left relative overflow-hidden"
     >
+       {isClient && (
         <Carousel
             plugins={[plugin.current]}
             className="w-full h-full absolute inset-0"
@@ -136,6 +142,8 @@ export function Hero() {
             <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-20 text-white bg-black/30 hover:bg-black/50 border-white/50" />
             <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-20 text-white bg-black/30 hover:bg-black/50 border-white/50" />
         </Carousel>
+       )}
+
 
         <div className="absolute inset-0 bg-black/50 z-10" />
 
