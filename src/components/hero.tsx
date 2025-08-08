@@ -7,7 +7,18 @@ import { ref } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import type { Profile } from '@/types';
 import { Skeleton } from './ui/skeleton';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
+
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,6 +43,12 @@ const itemVariants = {
   },
 };
 
+const carouselImages = [
+    { src: "https://placehold.co/1920x1080.png", alt: "Abstract code", hint: "abstract code" },
+    { src: "https://placehold.co/1920x1080.png", alt: "Developer workspace", hint: "developer workspace" },
+    { src: "https://placehold.co/1920x1080.png", alt: "Modern technology", hint: "modern technology" },
+]
+
 export function Hero() {
   const { t } = useLanguage();
   const [profile, loading] = useObjectVal<Profile>(ref(database, 'profile'));
@@ -45,6 +62,10 @@ export function Hero() {
       "a Freelancer",
       "a Designer"
   ];
+
+  const plugin = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  )
 
   useEffect(() => {
     let stringIndex = 0;
@@ -77,21 +98,49 @@ export function Hero() {
         timeoutId = setTimeout(type, typeSpeed);
     };
 
-    type();
+    const typingTimeout = setTimeout(type, 1000); // Initial delay
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(typingTimeout);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
     <section 
         id="hero" 
-        className="h-screen w-full flex flex-col justify-center items-start text-left bg-cover bg-center bg-no-repeat pl-[5%]"
-        style={{backgroundImage: "url('https://placehold.co/1920x1080.png')"}}
-        data-ai-hint="abstract code"
+        className="h-screen w-full flex flex-col justify-center items-start text-left relative overflow-hidden"
     >
-        <div className="absolute inset-0 bg-black/50" />
+        <Carousel
+            plugins={[plugin.current]}
+            className="w-full h-full absolute inset-0"
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
+        >
+            <CarouselContent className="h-full">
+                {carouselImages.map((image, index) => (
+                    <CarouselItem key={index} className="h-full">
+                        <div className="w-full h-full relative">
+                            <Image
+                                src={image.src}
+                                alt={image.alt}
+                                fill
+                                className="object-cover"
+                                data-ai-hint={image.hint}
+                                priority={index === 0}
+                            />
+                        </div>
+                    </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-20 text-white bg-black/30 hover:bg-black/50 border-white/50" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-20 text-white bg-black/30 hover:bg-black/50 border-white/50" />
+        </Carousel>
+
+        <div className="absolute inset-0 bg-black/50 z-10" />
+
         <motion.div 
-            className="container mx-auto px-4 text-white relative z-10"
+            className="container mx-auto px-4 text-white relative z-20"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
