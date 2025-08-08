@@ -44,9 +44,9 @@ const itemVariants = {
 };
 
 const carouselImages = [
-    { src: "https://placehold.co/1920x1080.png", alt: "Abstract code", hint: "abstract code" },
-    { src: "https://placehold.co/1920x1080.png", alt: "Developer workspace", hint: "developer workspace" },
-    { src: "https://placehold.co/1920x1080.png", alt: "Modern technology", hint: "modern technology" },
+    { src: "https://placehold.co/1920x1080.png", alt: "Nature morte avec des roses", hint: "photographie nature morte roses" },
+    { src: "https://placehold.co/1920x1080.png", alt: "Podium en bois sur fond vert", hint: "podium bois exposition" },
+    { src: "https://placehold.co/1920x1080.png", alt: "Personnage 3D sortant d'un smartphone", hint: "personnage 3d smartphone" },
 ]
 
 export function Hero() {
@@ -58,9 +58,9 @@ export function Hero() {
     profile?.name ? `I'm ${profile.name}` : t('hero.title');
   
   const stringsToType = [
-      "a Developer",
-      "a Freelancer",
-      "a Designer"
+      "une Touche d'Élégance",
+      "une Vision Durable",
+      "une Expérience Immersive"
   ];
 
   const plugin = useRef(
@@ -155,7 +155,7 @@ export function Hero() {
                 className="text-md md:text-xl max-w-2xl"
                 variants={itemVariants}
             >
-                <span>I am {typedText}</span>
+                <span>Je suis {typedText}</span>
                 <span className="animate-ping">|</span>
             </motion.div>
       </motion.div>
